@@ -1,0 +1,152 @@
+extends layouts/main
+
+block styles
+  link(rel='stylesheet', href='/css/dashboard.css')
+
+block content
+  .dashboard-container
+    .dashboard-header
+      .user-profile
+        .profile-pic
+          img(src='/images/profile-placeholder.jpg', alt='Profile Picture', width='60', height='60')
+        .user-info
+          h3= user.name
+          p= user.email
+          if user.phone
+            p Phone: #{user.phone}
+          if user.address
+            p Address: #{user.address}
+    
+    .quick-stats
+      h2 Quick Stats
+      .stats-grid
+        .stat-card
+          h3 Total Cases
+          .stat-value= stats.totalCases
+          .stat-breakdown
+            p Pending: #{stats.pendingCases}
+            p Closed: #{stats.closedCases}
+            p Upcoming: #{stats.upcomingCases}
+        .stat-card
+          h3 Petitions
+          .stat-value= stats.totalPetitions
+          .stat-breakdown
+            p Drafted: #{stats.draftedPetitions}
+            p Submitted: #{stats.submittedPetitions}
+            p Approved: #{stats.approvedPetitions}
+        .stat-card
+          h3 Actions
+          .quick-actions
+            a(href='/dashboard/add-petition') Create Petition
+            a(href='/dashboard/add-case') Add Case
+            a(href='/dashboard/upload-document') Upload Documents
+    
+    .dashboard-sections
+      .section
+        h3 Case Management
+        .section-content
+          form#add-case-form(method='POST', action='/dashboard/add-case')
+            .form-row
+              .form-group
+                label Case Title
+                input(type='text', name='title', required)
+              .form-group
+                label Case Type
+                select(name='type')
+                  option(value='Civil') Civil
+                  option(value='Criminal') Criminal
+                  option(value='Family') Family
+                  option(value='Constitutional') Constitutional
+                  option(value='Other') Other
+            .form-row
+              .form-group
+                label Court
+                input(type='text', name='court', required)
+              .form-group
+                label Case Number
+                input(type='text', name='caseNumber', required)
+            .form-row
+              .form-group
+                label Plaintiff
+                input(type='text', name='plaintiff')
+              .form-group
+                label Defendant
+                input(type='text', name='defendant')
+            .form-group
+              label Filing Date
+              input(type='date', name='filingDate')
+            button(type='submit') Add Case
+      
+      .section
+        h3 Petitions Module
+        .section-content
+          form#add-petition-form(method='POST', action='/dashboard/add-petition')
+            .form-group
+              label Petition Title
+              input(type='text', name='title', required)
+            .form-group
+              label Description
+              textarea(name='description', rows='3', required)
+            .form-row
+              .form-group
+                label Petition Type
+                select(name='type')
+                  option(value='Civil Writ') Civil Writ
+                  option(value='Criminal Petition') Criminal Petition
+                  option(value='Public Interest Petition') Public Interest Petition
+                  option(value='Administrative Request') Administrative Request
+            .form-row
+              .form-group
+                label Court
+                input(type='text', name='court')
+              .form-group
+                label Case Number
+                input(type='text', name='caseNumber')
+            button(type='submit') Add Petition
+      
+      .section
+        h3 Documents / Evidence
+        .section-content
+          form#upload-document-form(method='POST', action='/dashboard/upload-document', enctype='multipart/form-data')
+            .form-group
+              label Upload Document
+              input(type='file', name='document', required)
+            .form-row
+              .form-group
+                label Category
+                select(name='category')
+                  option(value='Evidence') Evidence
+                  option(value='Affidavit') Affidavit
+                  option(value='Notice') Notice
+                  option(value='Order') Order
+                  option(value='Other') Other
+              .form-group
+                label Description
+                input(type='text', name='description')
+            .form-row
+              .form-group
+                label Related to Case
+                input(type='text', name='caseId', placeholder='Case ID')
+              .form-group
+                label Related to Petition
+                input(type='text', name='petitionId', placeholder='Petition ID')
+            button(type='submit') Upload Document
+      
+      .section
+        h3 Court Calendar
+        .section-content
+          .calendar-placeholder
+            p Calendar functionality coming soon
+            p Track upcoming hearings for all your cases
+            p Receive automatic reminders for court dates
+      
+      .section
+        h3 AI Legal Draft Assistant
+        .section-content
+          .ai-assistant-container
+            .ai-chat-messages#ai-chat-messages
+              .message.bot-message
+                p Welcome to the AI Legal Draft Assistant! How can I help you draft legal documents today?
+            .ai-chat-input-container
+              input(type='text', id='ai-chat-input', placeholder='Ask about legal document drafting...')
+              button#ai-send-btn Send

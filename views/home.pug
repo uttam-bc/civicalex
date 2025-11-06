@@ -1,0 +1,53 @@
+extends layouts/main
+
+block content
+  .hero-section
+    .container
+      .hero-content
+        h1 Trusted Legal Platform
+        p CivicaLex simplifies access to legal and civic information for Indian citizens
+        .hero-image
+          img(src='/images/hero.jpg', alt='Legal Platform')
+  
+  .chatbot-section
+    .container
+      h2 Ask Legal Questions
+      .chatbot-container
+        .chat-messages#chat-messages
+          .message.bot-message
+            p Welcome to CivicaLex! How can I help you with legal information today?
+        .chat-input-container
+          input(type='text', id='chat-input', placeholder='Ask anything about legal matters...')
+          button#send-btn Send
+  
+  .features-section
+    .container
+      h2 Features Available After Login
+      .features-grid
+        .feature-box
+          h3 Case Management
+          p Track and manage your legal cases efficiently
+        .feature-box
+          h3 Case Dashboard
+          p Comprehensive view of all your legal matters
+        .feature-box
+          h3 Petition Module
+          p Draft and submit legal petitions with ease
+        .feature-box
+          h3 Store Documents
+          p Securely store and organize legal documents
+        .feature-box
+          h3 Court Calendar
+          p Schedule and track court hearings
+        .feature-box
+          h3 AI Legal Draft Assistant
+          p Generate legal documents with AI assistance
+        .feature-box
+          h3 Create Petitions
+          p Create various types of legal petitions
+        .feature-box
+          h3 Legal Research
+          p Access comprehensive legal research tools
+        .feature-box
+          h3 List of Laws and Acts
+          p Browse all Indian laws and legal acts

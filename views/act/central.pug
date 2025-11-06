@@ -1,0 +1,19 @@
+extends ../layouts/main
+
+block content
+  .act-container
+    .container
+      h1 Central Acts
+      table.act-table
+        thead
+          tr
+            th Number
+            th Name of Act
+            th Year
+        tbody
+          each act in acts
+            tr
+              td= act.number
+              td
+                a(href=`/act/central/${act.id}`)= act.name
+              td= act.year

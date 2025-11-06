@@ -1,0 +1,32 @@
+extends layouts/main
+
+block content
+  .auth-container
+    .auth-form
+      h2 Register with CivicaLex
+      if error
+        .error-message= error
+      if errors && errors.length
+        .error-message
+          ul
+            each error in errors
+              li= error.msg
+      form(method='POST', action='/register')
+        .form-group
+          label(for='name') Full Name
+          input(type='text', id='name', name='name', required)
+        .form-group
+          label(for='email') Email
+          input(type='email', id='email', name='email', required)
+        .form-group
+          label(for='password') Password
+          input(type='password', id='password', name='password', required, minlength='6')
+        .form-group
+          label(for='phone') Phone (Optional)
+          input(type='tel', id='phone', name='phone')
+        .form-group
+          label(for='address') Address (Optional)
+          textarea(id='address', name='address', rows='3')
+        button(type='submit') Register
+      p Already have an account? 
+        a(href='/login') Login here

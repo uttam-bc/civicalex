@@ -1,0 +1,16 @@
+header.navbar
+  .container
+    .logo
+      a(href='/')
+        img(src='/images/logo.png', alt='CivicaLex Logo', width='120', height='40')
+    nav.nav-menu
+      ul
+        li: a(href='/') Home
+        li: a(href='/about') About
+        li: a(href='/contact') Contact Us
+        li: a(href='/services') Services
+        if req.session.token
+          li: a(href='/dashboard') Dashboard
+          li: a(href='/logout') Logout
+        else
+          li: a(href='/login') Login

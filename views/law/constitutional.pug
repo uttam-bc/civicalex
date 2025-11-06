@@ -1,0 +1,40 @@
+extends ../layouts/main
+
+block content
+  .law-container
+    .container
+      h1 Constitutional Law
+      .law-section
+        h2 Step 1: What is Constitutional Law about?
+        p Constitutional law is a body of law which defines the role, powers, and structure of different entities within a state, such as the branches of government. Most commonly, constitutional law refers to the rights and powers of individuals and the government as established by a country's constitution.
+      
+      .law-section
+        h2 Step 2: Why do we need Constitutional Law and Solutions?
+        p Constitutional law is essential for:
+        ul
+          ul
+            li Protecting fundamental rights of citizens
+            li Establishing the framework of government
+            li Ensuring separation of powers
+            li Providing mechanisms for legal remedies
+        p Solutions include constitutional amendments, judicial review, and public legal awareness programs.
+      
+      .law-section
+        h2 Step 3: Help and Description
+        p Constitutional law governs the relationship between the state and its citizens. It encompasses fundamental rights, directive principles, and the structure of government. Key areas include:
+        ul
+          li Fundamental Rights (Articles 12-35)
+          li Directive Principles of State Policy (Articles 36-51)
+          li Fundamental Duties (Articles 51A)
+          li Structure of Government (Executive, Legislature, Judiciary)
+          li Emergency Provisions (Articles 352-360)
+      
+      .chatbot-section
+        h2 Constitutional Law Chatbot
+        .chatbot-container
+          .chat-messages#chat-messages
+            .message.bot-message
+              p Welcome! I can help you with constitutional law queries. What would you like to know?
+          .chat-input-container
+            input(type='text', id='chat-input', placeholder='Ask about constitutional law...')
+            button#send-btn Send
