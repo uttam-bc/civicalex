@@ -1,0 +1,101 @@
+{
+  "central": [
+    {
+      "id": 1,
+      "number": "1 of 1950",
+      "name": "The Indian Evidence Act",
+      "year": 1872
+    },
+    {
+      "id": 2,
+      "number": "26 of 1950",
+      "name": "The Constitution (Application to Jammu and Kashmir) Order",
+      "year": 1954
+    },
+    {
+      "id": 3,
+      "number": "27 of 1955",
+      "name": "The Hindu Marriage Act",
+      "year": 1955
+    },
+    {
+      "id": 4,
+      "number": "1 of 1961",
+      "name": "The Information Technology Act",
+      "year": 2000
+    },
+    {
+      "id": 5,
+      "number": "45 of 1978",
+      "name": "The Consumer Protection Act",
+      "year": 2019
+    },
+    {
+      "id": 6,
+      "number": "1 of 1930",
+      "name": "The Indian Contract Act",
+      "year": 1872
+    },
+    {
+      "id": 7,
+      "number": "1 of 1956",
+      "name": "The Companies Act",
+      "year": 2013
+    },
+    {
+      "id": 8,
+      "number": "23 of 1961",
+      "name": "The Income-tax Act",
+      "year": 1961
+    },
+    {
+      "id": 9,
+      "number": "12 of 2017",
+      "name": "The Goods and Services Tax (Compensation to States) Act",
+      "year": 2017
+    },
+    {
+      "id": 10,
+      "number": "9 of 1955",
+      "name": "The Hindu Succession Act",
+      "year": 1956
+    }
+  ],
+  "state": [
+    {
+      "id": 1,
+      "number": "1 of 2010",
+      "name": "The Maharashtra Control of Organised Crime Act",
+      "year": 1999,
+      "state": "Maharashtra"
+    },
+    {
+      "id": 2,
+      "number": "2 of 2010",
+      "name": "The Karnataka Prevention of Dangerous Activities of Bootleggers, Drug-offenders, Forest-offenders, Goondas, Immoral Traffic Offenders and Slum-grabbers Act",
+      "year": 1985,
+      "state": "Karnataka"
+    },
+    {
+      "id": 3,
+      "number": "3 of 2010",
+      "name": "The Tamil Nadu Prevention of Dangerous Activities of Bootleggers, Drug-offenders, Forest-offenders, Goondas, Immoral Traffic Offenders and Slum-grabbers Act",
+      "year": 1982,
+      "state": "Tamil Nadu"
+    },
+    {
+      "id": 4,
+      "number": "4 of 2010",
+      "name": "The Delhi Municipal Corporation Act",
+      "year": 1957,
+      "state": "Delhi"
+    },
+    {
+      "id": 5,
+      "number": "5 of 2010",
+      "name": "The West Bengal Land and Building Act",
+      "year": 1953,
+      "state": "West Bengal"
+    }
+  ]
+}

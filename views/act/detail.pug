@@ -1,0 +1,63 @@
+// Act Detail View (views/act/detail.pug)
+extends ../layouts/main
+
+block content
+  .act-container
+    .container
+      .act-header
+        h1= act.name
+        .act-meta
+          p #[strong Number:] #{act.number}
+          p #[strong Year:] #{act.year}
+          p #[strong Type:] #{act.type}
+          if act.jurisdiction
+            p #[strong Jurisdiction:] #{act.jurisdiction}
+          p #[strong Status:] #{act.status}
+      
+      .act-content
+        if act.description
+          .act-description
+            h2 Description
+            p= act.description
+        
+        if act.longTitle
+          .act-long-title
+            h2 Long Title
+            p= act.longTitle
+        
+        .act-content-full
+          h2 Act Content
+          if act.content
+            .act-text
+              != act.content
+          else
+            p Content not available. Please visit the official government website for the full text.
+        
+        if act.sections && act.sections.length > 0
+          .act-sections
+            h2 Key Sections
+            each section in act.sections.slice(0, 5) // Show first 5 sections
+              .section-item
+                h3 #{section.sectionNumber} - #{section.title}
+                p= section.content.substring(0, 200) + (section.content.length > 200 ? '...' : '')
+        
+        if act.amendments && act.amendments.length > 0
+          .act-amendments
+            h2 Amendments
+            each amendment in act.amendments
+              .amendment-item
+                p #[strong Amendment #{amendment.amendmentNumber}] (#{amendment.year}): #{amendment.description}
+                if amendment.date
+                  p Date: #{amendment.date.toLocaleDateString()}
+        
+        if act.relatedActs && act.relatedActs.length > 0
+          .act-related
+            h2 Related Acts
+            ul
+              each related in act.relatedActs
+                li= related.actId // In a real app, this would link to related act
+        
+        .act-actions
+          if act.sourceUrl
+            a.btn(href=act.sourceUrl, target='_blank') View on Official Website
+          a.btn(href='/law', class='secondary') Back to Law Categories

@@ -1,0 +1,147 @@
+// Litigation (views/services/litigation.pug)
+extends ../layouts/main
+
+block content
+  .service-container
+    .container
+      h1 Litigation Services
+      .service-content
+        h2 Legal Representation in Court Proceedings
+        p Litigation is the process of taking legal action in court to enforce rights or seek remedies. Our litigation services provide comprehensive legal representation across various areas of law.
+        
+        .litigation-areas
+          h3 Areas of Litigation
+          .areas-grid
+            .area-card
+              h4 Civil Litigation
+              p Disputes involving property, contracts, torts, and personal matters
+            .area-card
+              h4 Criminal Litigation
+              p Defense and prosecution in criminal matters
+            .area-card
+              h4 Commercial Litigation
+              p Business disputes, corporate matters, and commercial contracts
+            .area-card
+              h4 Constitutional Litigation
+              p Matters involving fundamental rights and constitutional issues
+            .area-card
+              h4 Family Litigation
+              p Matrimonial disputes, custody, maintenance, and succession
+            .area-card
+              h4 Tax Litigation
+              p Disputes related to income tax, GST, and other tax matters
+            .area-card
+              h4 Labor Litigation
+              p Employment disputes and industrial matters
+            .area-card
+              h4 Consumer Litigation
+              p Cases before consumer forums and commissions
+        
+        .litigation-process
+          h3 Litigation Process
+          .process-steps
+            .step
+              .step-number 1
+              .step-content
+                h4 Case Assessment
+                p Initial consultation to evaluate the strength of your case
+            .step
+              .step-number 2
+              .step-content
+                h4 Legal Strategy
+                p Development of comprehensive legal strategy and approach
+            .step
+              .step-number 3
+              .step-content
+                h4 Documentation
+                p Preparation of pleadings, applications, and legal documents
+            .step
+              .step-number 4
+              .step-content
+                h4 Court Proceedings
+                p Representation in court hearings and proceedings
+            .step
+              .step-number 5
+              .step-content
+                h4 Resolution
+                p Pursuit of favorable resolution through judgment or settlement
+        
+        .litigation-support
+          h3 Litigation Support Services
+          .support-grid
+            .support-item
+              h4 Case Management
+              p Organized case tracking and management systems
+            .support-item
+              h4 Document Management
+              p Secure storage and retrieval of case documents
+            .support-item
+              h4 Court Date Management
+              p Tracking of hearings and court schedules
+            .support-item
+              h4 Expert Witnesses
+              p Access to expert witnesses and consultants
+            .support-item
+              h4 Investigation Services
+              p Professional investigation and evidence gathering
+            .support-item
+              h4 Settlement Negotiation
+              p Professional negotiation for settlement
+            .support-item
+              h4 Appeals
+              p Representation in appellate courts
+            .support-item
+              h4 Enforcement
+              p Assistance in enforcement of judgments
+        
+        .litigation-costs
+          h3 Litigation Costs
+          .costs-info
+            .cost-item
+              h4 Initial Consultation
+              p Free consultation for case assessment
+            .cost-item
+              h4 Court Fees
+              p As per court rules and fee structure
+            .cost-item
+              h4 Professional Fees
+              p Competitive fees based on case complexity
+            .cost-item
+              h4 Other Expenses
+              p Actual expenses for process serving, investigation, etc.
+        
+        .litigation-form
+          h3 Request Litigation Services
+          form#litigation-form(method='POST', action='/services/litigation/request')
+            .form-group
+              label Name
+              input(type='text', name='name', required)
+            .form-group
+              label Email
+              input(type='email', name='email', required)
+            .form-group
+              label Phone
+              input(type='tel', name='phone', required)
+            .form-group
+              label Area of Law
+              select(name='area', required)
+                option(value='') Select Area of Law
+                option(value='civil') Civil
+                option(value='criminal') Criminal
+                option(value='commercial') Commercial
+                option(value='constitutional') Constitutional
+                option(value='family') Family
+                option(value='tax') Tax
+                option(value='labor') Labor
+                option(value='consumer') Consumer
+            .form-group
+              label Brief Description of Case
+              textarea(name='description', rows='4', required)
+            .form-group
+              label Urgency Level
+              select(name='urgency', required)
+                option(value='low') Low
+                option(value='medium') Medium
+                option(value='high') High
+                option(value='urgent') Urgent
+            button(type='submit') Request Litigation Services

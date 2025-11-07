@@ -1,0 +1,73 @@
+// Arbitration and Conciliation Law (views/law/arbitration.pug)
+extends ../layouts/main
+
+block content
+  .law-container
+    .container
+      h1 Arbitration & Conciliation Law
+      .law-section
+        h2 Step 1: What is Arbitration & Conciliation about?
+        p Arbitration and conciliation law governs alternative dispute resolution mechanisms that provide faster and more cost-effective alternatives to traditional court litigation. The Arbitration and Conciliation Act, 1996, governs these processes in India.
+        p These methods involve neutral third parties who help resolve disputes outside the formal court system. Arbitration results in binding decisions, while conciliation aims at mutually acceptable settlements between parties.
+      
+      .law-section
+        h2 Step 2: Why do we need Arbitration & Conciliation and Solutions?
+        h3 Why We Need Arbitration & Conciliation:
+        ul
+          li Faster resolution compared to court litigation
+          li Cost-effective dispute resolution
+          li Confidentiality of proceedings
+          li Expertise of arbitrators in specific fields
+          li International recognition and enforcement
+        h3 Solutions:
+        ul
+          li Arbitration clause inclusion in contracts
+          li Selection of appropriate arbitrators
+          li Proper documentation and evidence
+          li Compliance with procedural requirements
+          li Enforcement of arbitral awards
+      
+      .law-section
+        h2 Step 3: Help and Description
+        h3 Key Areas of Arbitration & Conciliation:
+        .arbitration-areas
+          .area-card
+            h4 Lok Adalat
+            p People's court for alternative dispute resolution
+          .area-card
+            h4 Legal Aid
+            p Free legal services for eligible persons
+          .area-card
+            h4 Consumer Forum
+            p Specialized forum for consumer disputes
+          .area-card
+            h4 Commercial Arbitration
+            p Resolution of business and commercial disputes
+          .area-card
+            h4 International Arbitration
+            p Cross-border dispute resolution mechanisms
+        h3 Arbitration Process:
+        ol
+          li Agreement to arbitrate (arbitration clause)
+          li Appointment of arbitrator(s)
+          li Submission of disputes to arbitration
+          li Hearing and evidence presentation
+          li Award by arbitrator
+          li Enforcement of award
+        h3 Types of ADR:
+        ul
+          li Arbitration: Binding decision by neutral arbitrator
+          li Conciliation: Facilitated settlement by conciliator
+          li Mediation: Structured negotiation process
+          li Negotiation: Direct settlement between parties
+          li Lok Adalat: Statutory alternative dispute resolution
+      
+      .chatbot-section
+        h2 Arbitration Law Chatbot
+        .chatbot-container
+          .chat-messages#chat-messages
+            .message.bot-message
+              p Welcome! I can help you with arbitration and conciliation law queries. What would you like to know about alternative dispute resolution?
+          .chat-input-container
+            input(type='text', id='chat-input', placeholder='Ask about arbitration law...', class='law-chat-input')
+            button#send-btn Send

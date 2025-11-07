@@ -1,0 +1,24 @@
+// State Acts List (views/act/state.pug)
+extends ../layouts/main
+
+block content
+  .act-container
+    .container
+      h1 State Acts
+      .act-search
+        input(type='text', placeholder='Search acts...', class='act-search-input')
+      table.act-table
+        thead
+          tr
+            th Number
+            th Name of Act
+            th Year
+            th State
+        tbody
+          each act in acts
+            tr
+              td= act.number
+              td
+                a(href=`/act/state/${act.id}`)= act.name
+              td= act.year
+              td= act.state

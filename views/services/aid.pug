@@ -1,0 +1,107 @@
+// Legal Aid (views/services/aid.pug)
+extends ../layouts/main
+
+block content
+  .service-container
+    .container
+      h1 Legal Aid
+      .service-content
+        h2 Free and Low-Cost Legal Assistance
+        p Legal aid is the provision of assistance to people who are unable to afford legal representation and access to the court system. In India, legal aid is provided under the Legal Services Authorities Act, 1987.
+        
+        .aid-eligibility
+          h3 Who is Eligible for Legal Aid?
+          .eligibility-grid
+            .eligibility-card
+              h4 Income Criteria
+              p Families with annual income below ₹1 lakh (₹2 lakh in metropolitan cities) are generally eligible for free legal aid
+            .eligibility-card
+              h4 Social Categories
+              p Members of Scheduled Castes, Scheduled Tribes, and other backward classes
+            .eligibility-card
+              h4 Vulnerable Groups
+              p Women, children, disabled persons, and victims of trafficking or violence
+            .eligibility-card
+              h4 Other Criteria
+              p Prisoners, persons in custody, and those facing capital punishment
+        
+        .aid-services
+          h3 Legal Aid Services Available
+          .services-list
+            .service-item
+              h4 Free Legal Consultation
+              p Initial consultation with qualified legal professionals
+            .service-item
+              h4 Court Representation
+              p Legal representation in courts and tribunals
+            .service-item
+              h4 Document Preparation
+              p Assistance in preparing legal documents and applications
+            .service-item
+              h4 Mediation Services
+              p Alternative dispute resolution through mediation
+            .service-item
+              h4 Legal Awareness Programs
+              p Educational programs to inform about legal rights
+            .service-item
+              h4 Public Interest Litigation
+              p Support for cases involving public interest
+        
+        .aid-process
+          h3 How to Access Legal Aid
+          .process-steps
+            .step
+              .step-number 1
+              .step-content
+                h4 Apply for Legal Aid
+                p Fill out the application form at the nearest Legal Services Authority
+            .step
+              .step-number 2
+              .step-content
+                h4 Document Verification
+                p Submit required documents for eligibility verification
+            .step
+              .step-number 3
+              .step-content
+                h4 Case Assessment
+                p Legal professionals assess your case and assign counsel
+            .step
+              .step-number 4
+              .step-content
+                h4 Legal Representation
+                p Receive free legal representation in your case
+        
+        .aid-authorities
+          h3 Legal Services Authorities
+          .authority-list
+            .authority-item
+              h4 National Legal Services Authority (NALSA)
+              p Central authority for legal aid services in India
+            .authority-item
+              h4 State Legal Services Authorities
+              p State-level bodies providing legal aid services
+            .authority-item
+              h4 District Legal Services Authorities
+              p Local bodies providing legal aid at district level
+            .authority-item
+              h4 Taluk Legal Services Committees
+              p Local committees at taluk level
+        
+        .aid-form
+          h3 Apply for Legal Aid
+          form#legal-aid-form(method='POST', action='/services/aid/apply')
+            .form-row
+              .form-group
+                label Full Name
+                input(type='text', name='name', required)
+              .form-group
+                label Age
+                input(type='number', name='age', required)
+            .form-row
+              .form-group
+                label Gender
+                select(name='gender', required)
+                  option(value='') Select Gender
+                  option(value='male') Male
+                  option(value='female') Female
+                  option(value='other')

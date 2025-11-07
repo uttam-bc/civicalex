@@ -1,0 +1,167 @@
+// Legal Research (views/services/research.pug)
+extends ../layouts/main
+
+block content
+  .service-container
+    .container
+      h1 Legal Research Services
+      .service-content
+        h2 Access to Legal Databases and Research Tools
+        p Legal research is the process of identifying and retrieving information necessary to support legal decision-making. Our research services provide access to comprehensive legal databases and expert research assistance.
+        
+        .research-resources
+          h3 Legal Research Resources
+          .resources-grid
+            .resource-card
+              h4 Case Law Database
+              p Access to judgments from Supreme Court, High Courts, and subordinate courts
+            .resource-card
+              h4 Statutory Database
+              p Complete collection of acts, rules, and regulations
+            .resource-card
+              h4 Legal Journals
+              p Access to national and international legal journals
+            .resource-card
+              h4 Legal Commentary
+              p Expert analysis and commentary on legal provisions
+            .resource-card
+              h4 International Law
+              p Treaties, conventions, and international legal materials
+            .resource-card
+              h4 Comparative Law
+              p Comparative analysis of different legal systems
+        
+        .research-services
+          h3 Research Services Offered
+          .services-list
+            .service-item
+              h4 Case Law Research
+              p Research on specific legal precedents and judgments
+            .service-item
+              h4 Statutory Research
+              p Research on applicable laws and regulations
+            .service-item
+              h4 Comparative Analysis
+              p Comparative study of different legal provisions
+            .service-item
+              h4 Legal Opinions
+              p Expert legal opinions on complex legal issues
+            .service-item
+              h4 Drafting Assistance
+              p Help with legal document drafting based on research
+            .service-item
+              h4 Compliance Research
+              p Research on compliance requirements for businesses
+        
+        .research-tools
+          h3 Research Tools and Databases
+          .tools-grid
+            .tool-item
+              h4 Indian Kanoon
+              p Access to legal documents and case law database
+            .tool-item
+              h4 eCourts
+              p Case status and judgment database
+            .tool-item
+              h4 India Code
+              p Central and state acts database
+            .tool-item
+              h4 Legal Databases
+              p Subscription-based legal research platforms
+            .tool-item
+              h4 Custom Research
+              p Bespoke research tailored to specific needs
+            .tool-item
+              h4 Legal AI Tools
+              p AI-powered legal research assistance
+        
+        .research-process
+          h3 Research Process
+          .process-steps
+            .step
+              .step-number 1
+              .step-content
+                h4 Research Request
+                p Submit your research requirements and parameters
+            .step
+              .step-number 2
+              .step-content
+                h4 Research Strategy
+              p Development of research strategy and approach
+            .step
+              .step-number 3
+              .step-content
+                h4 Primary Research
+              p Search of primary legal sources and precedents
+            .step
+              .step-number 4
+              .step-content
+                h4 Analysis
+              p Analysis and synthesis of research findings
+            .step
+              .step-number 5
+              .step-content
+                h4 Report
+              p Comprehensive research report with findings
+        
+        .research-benefits
+          h3 Benefits of Legal Research
+          .benefits-grid
+            .benefit-item
+              h4 Informed Decision Making
+              p Make decisions based on thorough legal analysis
+            .benefit-item
+              h4 Risk Assessment
+              p Identify legal risks and compliance requirements
+            .benefit-item
+              h4 Strategic Planning
+              p Plan legal strategies based on precedents
+            .benefit-item
+              h4 Time Saving
+              p Save time by accessing expert research
+            .benefit-item
+              h4 Cost Effective
+              p Avoid legal pitfalls through proper research
+            .benefit-item
+              h4 Comprehensive Coverage
+              p Access to comprehensive legal information
+        
+        .research-form
+          h3 Request Legal Research
+          form#research-form(method='POST', action='/services/research/request')
+            .form-group
+              label Name
+              input(type='text', name='name', required)
+            .form-group
+              label Email
+              input(type='email', name='email', required)
+            .form-group
+              label Phone
+              input(type='tel', name='phone')
+            .form-group
+              label Research Area
+              select(name='area', required)
+                option(value='') Select Research Area
+                option(value='case-law') Case Law Research
+                option(value='statutory') Statutory Research
+                option(value='comparative') Comparative Analysis
+                option(value='opinion') Legal Opinion
+                option(value='compliance') Compliance Research
+                option(value='other') Other
+            .form-group
+              label Research Requirements
+              textarea(name='requirements', rows='4', required)
+            .form-group
+              label Urgency
+              select(name='urgency', required)
+                option(value='normal') Normal (5-7 days)
+                option(value='urgent') Urgent (2-3 days)
+                option(value='immediate') Immediate (1 day)
+            .form-group
+              label Budget Range
+              select(name='budget')
+                option(value='low') Under ₹5,000
+                option(value='medium') ₹5,000 - ₹15,000
+                option(value='high') ₹15,000 - ₹50,000
+                option(value='custom') Above ₹50,000
+            button(type='submit') Request Research Services
