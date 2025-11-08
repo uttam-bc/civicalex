@@ -1,0 +1,21 @@
+// views/error.pug
+doctype html
+html(lang='en')
+  head
+    meta(charset='UTF-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1.0')
+    title Error - CivicaLex
+    link(rel='stylesheet', href='/css/style.css')
+  body
+    .error-container
+      .container
+        .error-content
+          h1= message || 'An Error Occurred'
+          p= title || 'Error'
+          if error
+            .error-details
+              p #[strong Error:] #{error.message}
+              p #[strong Stack:] #{error.stack}
+          else
+            p We're sorry, but something went wrong. Please try again later.
+          a.btn(href='/') Go Back Home

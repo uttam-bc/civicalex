@@ -1,3 +1,4 @@
+// views/partials/header.pug
 header.navbar
   .container
     .logo
@@ -9,7 +10,7 @@ header.navbar
         li: a(href='/about') About
         li: a(href='/contact') Contact Us
         li: a(href='/services') Services
-        if req.session.token
+        if typeof user !== 'undefined' && user
           li: a(href='/dashboard') Dashboard
           li: a(href='/logout') Logout
         else

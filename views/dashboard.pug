@@ -1,3 +1,4 @@
+// views/dashboard.pug
 extends layouts/main
 
 block styles
@@ -95,7 +96,8 @@ block content
                   .case-title #{case.title}
                   .case-details
                     p #{case.type} | #{case.court} | Case #: #{case.caseNumber}
-                    .status(class=`status-${case.status.toLowerCase()}`) #{case.status}
+                    .status(class=`status-${case.status.toLowerCase()}`)
+                      | #{case.status}
                     if case.nextHearing
                       p Next Hearing: #{case.nextHearing.toLocaleDateString()}
             else
@@ -139,7 +141,8 @@ block content
                   .petition-title #{petition.title}
                   .petition-details
                     p #{petition.type} | #{petition.court}
-                    .status(class=`status-${petition.status.toLowerCase()}`) #{petition.status}
+                    .status(class=`status-${petition.status.toLowerCase()}`)
+                      | #{petition.status}
                     if petition.filingDate
                       p Filed: #{petition.filingDate.toLocaleDateString()}
             else
@@ -243,7 +246,8 @@ block content
                   .case-title #{case.title}
                   .case-details
                     p #{case.type} | #{case.court} | Case #: #{case.caseNumber}
-                    .status(class=`status-${case.status.toLowerCase()}`) #{case.status}
+                    .status(class=`status-${case.status.toLowerCase()}`)
+                      | #{case.status}
                     if case.nextHearing
                       p Next Hearing: #{case.nextHearing.toLocaleDateString()}
                     p Last Updated: #{case.updatedAt.toLocaleDateString()}
