@@ -40,8 +40,8 @@ app.use(helmet({
 
 // ⚡ Rate limiting
 const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 5, // limit each IP to 5 requests per windowMs
+  windowMs: 15 * 60 * 1000,
+  max: 5,
   message: 'Too many authentication attempts. Please try again later.',
   standardHeaders: true,
   legacyHeaders: false,
@@ -53,12 +53,11 @@ const generalLimiter = rateLimit({
   skipSuccessfulRequests: true
 });
 
-// Apply rate limiting
 app.use('/login', authLimiter);
 app.use('/register', authLimiter);
 app.use(generalLimiter);
 
-// Middleware
+// Middleware - ORDER MATTERS!
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: false, limit: '10mb' }));
 
@@ -74,7 +73,7 @@ app.use((req, res, next) => {
   next();
 });
 
-// 🔐 Session configuration
+// 🔐 Session configuration - MUST COME BEFORE CSRF
 app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
@@ -83,12 +82,12 @@ app.use(session({
     secure: process.env.NODE_ENV === 'production',
     httpOnly: true,
     sameSite: 'lax',
-    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+    maxAge: 24 * 60 * 60 * 1000
   }
 }));
 
-// 🛡️ CSRF protection
-const csrfProtection = csrf({ cookie: true });
+// 🛡️ CSRF protection - MUST COME AFTER SESSION
+const csrfProtection = csrf();
 app.use(csrfProtection);
 app.use((req, res, next) => {
   res.locals.csrfToken = req.csrfToken();

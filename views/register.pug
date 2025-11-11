@@ -5,28 +5,60 @@ block content
     .auth-form
       h2 Register with CivicaLex
       if error
-        .error-message= error
+        .error-message(role='alert', aria-live='polite')= error
       if errors && errors.length
-        .error-message
+        .error-message(role='alert', aria-live='polite')
           ul
             each error in errors
               li= error.msg
-      form(method='POST', action='/register')
+      form#register-form(method='POST', action='/register')
+        // ✅ CRITICAL: CSRF Token for form protection
+        input(type='hidden', name='_csrf', value=csrfToken)
+        
         .form-group
           label(for='name') Full Name
-          input(type='text', id='name', name='name', required)
+          input#name(
+            type='text',
+            name='name',
+            required,
+            placeholder='Enter your full name',
+            oninput='this.value = this.value.trimStart().replace(/\\s+/g, " ")'
+          )
         .form-group
           label(for='email') Email
-          input(type='email', id='email', name='email', required)
+          input#email(
+            type='email',
+            name='email',
+            required,
+            placeholder='Enter your email'
+          )
         .form-group
           label(for='password') Password
-          input(type='password', id='password', name='password', required, minlength='6')
+          small.text-muted Password must be at least 6 characters
+          .password-input-container
+            input#password(
+              type='password',
+              name='password',
+              required,
+              minlength='6',
+              placeholder='Enter password'
+            )
+            button.password-toggle(type='button', onclick='togglePassword("password")') Show
         .form-group
           label(for='phone') Phone (Optional)
-          input(type='tel', id='phone', name='phone')
+          input#phone(
+            type='tel',
+            name='phone',
+            pattern='^\\+?91[6-9]\\d{9}$',
+            placeholder='e.g., +919876543210'
+          )
         .form-group
           label(for='address') Address (Optional)
-          textarea(id='address', name='address', rows='3')
+          textarea#address(
+            name='address',
+            rows='3',
+            placeholder='Enter your address'
+          )
         button(type='submit') Register
       p Already have an account? 
         a(href='/login') Login here

@@ -9,7 +9,13 @@ router.get('/', (req, res) => {
   const features = [
     { title: 'Case Management', desc: 'Track and manage your legal cases efficiently' },
     { title: 'Petition Module', desc: 'Draft and submit legal petitions with ease' },
-    // ... all 9 features
+     { title: 'Petition Module', desc: 'Draft and submit legal petitions with ease' },
+    { title: 'Store Documents', desc: 'Securely store and organize legal documents' },
+    { title: 'Court Calendar', desc: 'Schedule and track court hearings' },
+    { title: 'AI Legal Draft Assistant', desc: 'Generate legal documents with AI assistance' },
+    { title: 'Create Petitions', desc: 'Create various types of legal petitions' },
+    { title: 'Legal Research', desc: 'Access comprehensive legal research tools' },
+    { title: 'List of Laws and Acts', desc: 'Browse all Indian laws and legal acts' }
   ];
   res.render('home', { 
     title: 'CivicaLex - Trusted Legal Platform',

@@ -96,15 +96,15 @@ block content
           .cases-list
             h4 My Cases
             if cases && cases.length > 0
-              each case in cases
-                .case-item(data-case-id=case._id)
-                  .case-title #{case.title}
+              each caseItem in cases
+                .case-item(data-case-id=caseItem._id.toString())
+                  .case-title #{caseItem.title}
                   .case-details
-                    p #{case.type} | #{case.court} | Case #: #{case.caseNumber}
-                    .status(class=`status-${case.status.toLowerCase()}`)
-                      | #{case.status}
-                    if case.nextHearing
-                      p Next Hearing: #{case.nextHearing.toLocaleDateString()}
+                    p #{caseItem.type} | #{caseItem.court} | Case #: #{caseItem.caseNumber}
+                    .status(class=`status-${caseItem.status.toLowerCase()}`)
+                      | #{caseItem.status}
+                    if caseItem.nextHearing
+                      p Next Hearing: #{caseItem.nextHearing.toLocaleDateString()}
             else
               p No cases found. Create your first case!
 
@@ -142,15 +142,15 @@ block content
           .petitions-list
             h4 My Petitions
             if petitions && petitions.length > 0
-              each petition in petitions
-                .petition-item(data-petition-id=pollition._id)
-                  .petition-title #{petition.title}
+              each petitionItem in petitions
+                .petition-item(data-petition-id=petitionItem._id.toString())
+                  .petition-title #{petitionItem.title}
                   .petition-details
-                    p #{petition.type} | #{petition.court}
-                    .status(class=`status-${petition.status.toLowerCase()}`)
-                      | #{petition.status}
-                    if petition.filingDate
-                      p Filed: #{petition.filingDate.toLocaleDateString()}
+                    p #{petitionItem.type} | #{petitionItem.court}
+                    .status(class=`status-${petitionItem.status.toLowerCase()}`)
+                      | #{petitionItem.status}
+                    if petitionItem.filingDate
+                      p Filed: #{petitionItem.filingDate.toLocaleDateString()}
             else
               p No petitions found. Create your first petition!
 
@@ -191,15 +191,15 @@ block content
           .documents-grid
             h4 My Documents
             if documents && documents.length > 0
-              each document in documents
+              each documentItem in documents
                 .document-card
                   .document-icon 📄
-                  .document-name= document.fileName
-                  .document-type= document.fileType
+                  .document-name= documentItem.fileName
+                  .document-type= documentItem.fileType
                   .document-actions
-                    a.btn(href=`/documents/${document._id}/view`, target='_blank') View
-                    a.btn(href=`/documents/${document._id}/download`) Download
-                    form(action=`/documents/${document._id}/delete`, method='POST', style='display:inline')
+                    a.btn(href=`/documents/${documentItem._id.toString()}/view`, target='_blank') View
+                    a.btn(href=`/documents/${documentItem._id.toString()}/download`) Download
+                    form(action=`/documents/${documentItem._id.toString()}/delete`, method='POST', style='display:inline')
                       input(type='hidden', name='_csrf', value=csrfToken)
                       button.btn.delete-btn(type='submit', onclick='return confirm("Delete this document?")') Delete
             else
@@ -250,16 +250,16 @@ block content
 
           .cases-list#dashboard-cases
             if allCases && allCases.length > 0
-              each case in allCases
-                .case-item(data-status=case.status)
-                  .case-title #{case.title}
+              each caseItem in allCases
+                .case-item(data-status=caseItem.status)
+                  .case-title #{caseItem.title}
                   .case-details
-                    p #{case.type} | #{case.court} | Case #: #{case.caseNumber}
-                    .status(class=`status-${case.status.toLowerCase()}`)
-                      | #{case.status}
-                    if case.nextHearing
-                      p Next Hearing: #{case.nextHearing.toLocaleDateString()}
-                    p Last Updated: #{case.updatedAt.toLocaleDateString()}
+                    p #{caseItem.type} | #{caseItem.court} | Case #: #{caseItem.caseNumber}
+                    .status(class=`status-${caseItem.status.toLowerCase()}`)
+                      | #{caseItem.status}
+                    if caseItem.nextHearing
+                      p Next Hearing: #{caseItem.nextHearing.toLocaleDateString()}
+                    p Last Updated: #{caseItem.updatedAt.toLocaleDateString()}
             else
               p No cases found.
 
