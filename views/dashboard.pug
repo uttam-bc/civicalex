@@ -1,5 +1,17 @@
 // views/dashboard.pug
 extends layouts/main
+// In views/dashboard.pug
+each document in documents
+  .document-card
+    .document-icon 📄
+    .document-name= document.fileName
+    .document-type= document.mimeType
+    .document-actions
+      a.btn(href=`/documents/${document._id}/view`, target='_blank') View
+      a.btn(href=`/documents/${document._id}/download`) Download
+      form(action=`/documents/${document._id}/delete`, method='POST', style='display:inline')
+        input(type='hidden', name='_csrf', value=csrfToken)
+        button.btn.delete-btn(type='submit', onclick='return confirm("Delete this document?")') Delete
 
 block styles
   link(rel='stylesheet', href='/css/dashboard.css')

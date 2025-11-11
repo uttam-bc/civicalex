@@ -1,0 +1,72 @@
+// Business Law (views/law/business.pug)
+extends ../layouts/main
+
+block content
+  .law-container
+    .container
+      h1 Business Law
+      .law-section
+        h2 Step 1: What is Business Law about?
+        p Business law governs the formation, operation, and regulation of businesses and commercial activities. It encompasses various legal aspects of running a business, including registration, licensing, compliance, contracts, and dispute resolution.
+        p This area of law covers different business structures (sole proprietorship, partnership, company, LLP), regulatory compliance, business transactions, and protection of commercial interests. It ensures fair business practices and protects stakeholders' rights.
+      
+      .law-section
+        h2 Step 2: Why do we need Business Law and Solutions?
+        h3 Why We Need Business Law:
+        ul
+          li Regulation of business activities and practices
+          li Protection of business interests and intellectual property
+          li Fair competition and market practices
+          li Investor and consumer protection
+          li Dispute resolution and contract enforcement
+        h3 Solutions:
+        ul
+          li Proper business registration and licensing
+          li Compliance with regulatory requirements
+          li Contract drafting and review
+          li Intellectual property protection
+          li Risk management and legal compliance
+      
+      .law-section
+        h2 Step 3: Help and Description
+        h3 Key Areas of Business Law:
+        .business-areas
+          .area-card
+            h4 Business Registration
+            p Procedures for different business structures
+          .area-card
+            h4 Financial Discipline
+            p Accounting, auditing, and financial compliance
+          .area-card
+            h4 Business Licensing
+            p Required licenses and permits for operations
+          .area-card
+            h4 Business Filing
+            p Annual returns and compliance filings
+          .area-card
+            h4 Contracts
+            p Drafting, review, and enforcement of agreements
+        h3 Business Structures:
+        ul
+          li Sole Proprietorship: Simple ownership structure
+          li Partnership: Two or more persons sharing business
+          li Limited Liability Partnership (LLP): Limited liability with partnership flexibility
+          li Private Limited Company: Separate legal entity with limited liability
+          li Public Limited Company: Shares available to public
+        h3 Important Compliance:
+        ul
+          li ROC filings for companies
+          li GST registration and compliance
+          li Income tax obligations
+          li Labor law compliance
+          li Environmental clearances (if applicable)
+      
+      .chatbot-section
+        h2 Business Law Chatbot
+        .chatbot-container
+          .chat-messages#chat-messages
+            .message.bot-message
+              p Welcome! I can help you with business law queries. What would you like to know about registration, licensing, or business compliance?
+          .chat-input-container
+            input(type='text', id='chat-input', placeholder='Ask about business law...', class='law-chat-input')
+            button#send-btn Send

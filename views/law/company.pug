@@ -1,0 +1,65 @@
+// Company Law (views/law/company.pug)
+extends ../layouts/main
+
+block content
+  .law-container
+    .container
+      h1 Company Law
+      .law-section
+        h2 Step 1: What is Company Law about?
+        p Company law governs the formation, operation, and dissolution of companies. In India, it is primarily governed by the Companies Act, 2013, which replaced the Companies Act, 1956.
+        p This area of law covers incorporation procedures, compliance requirements, corporate governance, mergers and acquisitions, winding up procedures, and the rights and duties of shareholders, directors, and other stakeholders.
+      
+      .law-section
+        h2 Step 2: Why do we need Company Law and Solutions?
+        h3 Why We Need Company Law:
+        ul
+          li Protection of shareholder interests
+          li Corporate governance and transparency
+          li Standardized procedures for incorporation and compliance
+          li Dispute resolution mechanisms
+          li Regulation of capital markets and investor protection
+        h3 Solutions:
+        ul
+          li Regular compliance with ROC filings
+          li Proper corporate governance practices
+          li Timely statutory audits and returns
+          li Professional legal and compliance support
+          li Use of technology for compliance management
+      
+      .law-section
+        h2 Step 3: Help and Description
+        h3 Key Areas of Company Law:
+        .company-areas
+          .area-card
+            h4 Incorporation
+            p Procedures for forming private, public, and one-person companies
+          .area-card
+            h4 Compliance
+            p Annual filings, board meetings, and statutory requirements
+          .area-card
+            h4 Corporate Governance
+            p Director duties, shareholder rights, and board responsibilities
+          .area-card
+            h4 Mergers & Acquisitions
+            p Procedures for business combinations and restructuring
+          .area-card
+            h4 Winding Up
+            p Voluntary and compulsory dissolution procedures
+        h3 Important Procedures:
+        ul
+          li Company incorporation through SPICe+ form
+          li Director Identification Number (DIN) and Digital Signature Certificate (DSC)
+          li ROC annual returns and compliance filings
+          li Board and general meetings procedures
+          li Financial statement and audit requirements
+      
+      .chatbot-section
+        h2 Company Law Chatbot
+        .chatbot-container
+          .chat-messages#chat-messages
+            .message.bot-message
+              p Welcome! I can help you with company law queries. What would you like to know about incorporation, compliance, or corporate governance?
+          .chat-input-container
+            input(type='text', id='chat-input', placeholder='Ask about company law...', class='law-chat-input')
+            button#send-btn Send

@@ -1,19 +1,9 @@
-const jwt = require('jsonwebtoken');
-
-const authenticateToken = (req, res, next) => {
-  const token = req.session.token;
-  
-  if (!token) {
+const authenticateSession = (req, res, next) => {
+  if (!req.session.userId) {
+    req.flash('error', 'Please log in to access this page.');
     return res.redirect('/login');
   }
-  
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'civicalex_jwt_secret');
-    req.user = decoded;
-    next();
-  } catch (error) {
-    res.redirect('/login');
-  }
+  next();
 };
 
-module.exports = { authenticateToken };
+module.exports = { authenticateSession };

@@ -1,0 +1,62 @@
+extends ../layouts/main
+
+block content
+  .law-container
+    .container
+      // Breadcrumb
+      nav.breadcrumb.mb-3
+        a(href="/") Home
+        |  > 
+        a(href="/law") Areas of Law
+        |  > 
+        span Intellectual Property
+
+      h1= law.title || 'Intellectual Property Law'
+
+      .law-section
+        h2 What is Intellectual Property Law?
+        each para in (law.introduction || '').split('\n')
+          p= para
+
+      .law-section
+        h2 Why We Need Intellectual Property Law
+        ul
+          each item in law.whyNeed || []
+            li= item
+        h3 Solutions
+        ul
+          each item in law.solutions || []
+            li= item
+
+      .law-section
+        h2 Key Areas and Types
+        .ip-areas(style="display: flex; flex-wrap: wrap; gap: 1rem;")
+          each area in law.keyAreas || []
+            .area-card(style="flex: 1; min-width: 200px; border: 1px solid #ddd; padding: 1rem; border-radius: 8px;")
+              h4= area.title
+              p= area.description
+
+        h3 Types of Intellectual Property
+        ul
+          each type in law.ipTypes || []
+            li #[strong #{type.name}:] #{type.description}
+
+        h3 Registration Process
+        ol
+          each step in law.registrationSteps || []
+            li= step
+
+      .chatbot-section.mt-5
+        h2 Ask About Intellectual Property Law
+        .chatbot-container
+          .chat-messages#chat-messages(aria-live="polite")
+            .message.bot-message
+              p Welcome! I can help you with intellectual property queries. What would you like to know about patents, trademarks, copyrights, or design rights?
+          .chat-input-container
+            input.law-chat-input(
+              type="text"
+              id="chat-input"
+              placeholder="Ask about IP law..."
+              aria-label="Ask a question about intellectual property law"
+            )
+            button#send-btn Send

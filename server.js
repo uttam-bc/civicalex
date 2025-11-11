@@ -38,6 +38,10 @@ app.use('/dashboard', require('./routes/dashboard'));
 app.use('/law', require('./routes/law'));
 app.use('/act', require('./routes/act'));
 app.use('/services', require('./routes/services'));
+app.use('/api', require('./routes/api'));
+// ✅ NEW: Document routes (must be after dashboard)
+app.use('/documents', require('./routes/document'));
+
 
 // Error handling middleware
 app.use((err, req, res, next) => {

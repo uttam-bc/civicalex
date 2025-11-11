@@ -1,0 +1,66 @@
+// Labour Law (views/law/labour.pug)
+extends ../layouts/main
+
+block content
+  .law-container
+    .container
+      h1 Labour Law
+      .law-section
+        h2 Step 1: What is Labour Law about?
+        p Labour law governs the relationship between employers, employees, and trade unions. In India, it is covered by numerous central and state laws dealing with industrial relations, working conditions, social security, and employment standards.
+        p This area of law ensures fair treatment of workers, safe working conditions, and proper compensation while balancing employer interests and business operations.
+      
+      .law-section
+        h2 Step 2: Why do we need Labour Law and Solutions?
+        h3 Why We Need Labour Law:
+        ul
+          li Protection of worker rights and safety
+          li Fair wages and working conditions
+          li Social security and benefits
+          li Industrial harmony and dispute resolution
+          li Prevention of exploitation
+        h3 Solutions:
+        ul
+          li Compliance with labour laws and regulations
+          li Proper employment contracts and policies
+          li Regular safety audits and training
+          li Dispute resolution mechanisms
+          li Social security and benefits management
+      
+      .law-section
+        h2 Step 3: Help and Description
+        h3 Key Areas of Labour Law:
+        .labour-areas
+          .area-card
+            h4 Labour Law Filing
+            p Compliance with various labour laws and returns
+          .area-card
+            h4 Mandatory Requirements
+            p Statutory compliance and reporting obligations
+          .area-card
+            h4 Payroll Services
+            p Salary processing and statutory deductions
+          .area-card
+            h4 Representation Services
+            p Legal support in labour disputes
+          .area-card
+            h4 Due Diligence Services
+            p Labour law compliance audits
+        h3 Important Acts:
+        ul
+          li Industrial Disputes Act, 1947
+          li Factories Act, 1948
+          li Minimum Wages Act, 1948
+          li Payment of Gratuity Act, 1972
+          li Employees' Provident Funds Act, 1952
+          li Shops and Commercial Establishments Act (State-specific)
+      
+      .chatbot-section
+        h2 Labour Law Chatbot
+        .chatbot-container
+          .chat-messages#chat-messages
+            .message.bot-message
+              p Welcome! I can help you with labour law queries. What would you like to know about compliance, payroll, or employee rights?
+          .chat-input-container
+            input(type='text', id='chat-input', placeholder='Ask about labour law...', class='law-chat-input')
+            button#send-btn Send

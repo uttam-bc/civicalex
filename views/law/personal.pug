@@ -1,0 +1,71 @@
+// Personal Law (views/law/personal.pug)
+extends ../layouts/main
+
+block content
+  .law-container
+    .container
+      h1 Personal Law
+      .law-section
+        h2 Step 1: What is Personal Law about?
+        p Personal law governs matters related to individuals' personal affairs, including family, property, and personal rights. In India, personal laws are often based on religion and customs, covering marriage, divorce, inheritance, adoption, and maintenance.
+        p This area of law includes property disputes, consumer rights, personal injury claims, and other individual legal matters. It encompasses both religious personal laws and secular laws applicable to all citizens.
+      
+      .law-section
+        h2 Step 2: Why do we need Personal Law and Solutions?
+        h3 Why We Need Personal Law:
+        ul
+          li Resolution of family and personal disputes
+          li Protection of property rights and inheritance
+          li Safeguarding consumer interests
+          li Compensation for personal injuries
+          li Maintenance of social harmony and justice
+        h3 Solutions:
+        ul
+          li Legal representation in personal matters
+          li Mediation and alternative dispute resolution
+          li Proper documentation and evidence gathering
+          li Understanding of rights and legal procedures
+          li Timely legal action to protect interests
+      
+      .law-section
+        h2 Step 3: Help and Description
+        h3 Key Areas of Personal Law:
+        .personal-areas
+          .area-card
+            h4 Property Disputes
+            p Land, house, and property ownership conflicts
+          .area-card
+            h4 Consumer Rights
+            p Protection against unfair trade practices
+          .area-card
+            h4 Personal Injury
+            p Compensation for accidents and injuries
+          .area-card
+            h4 Family Law
+            p Marriage, divorce, custody, and maintenance
+          .area-card
+            h4 Inheritance
+            p Succession and will matters
+        h3 Important Procedures:
+        ul
+          li Property dispute resolution through courts or tribunals
+          li Consumer complaint filing under Consumer Protection Act
+          li Personal injury claims and compensation procedures
+          li Family court procedures for matrimonial matters
+          li Will execution and succession procedures
+        h3 Religious Personal Laws:
+        ul
+          li Hindu Personal Law (Hindu Marriage Act, Hindu Succession Act)
+          li Muslim Personal Law (Shariat Act)
+          li Christian Personal Law (Indian Divorce Act)
+          li Parsi Personal Law (Parsi Marriage Act)
+      
+      .chatbot-section
+        h2 Personal Law Chatbot
+        .chatbot-container
+          .chat-messages#chat-messages
+            .message.bot-message
+              p Welcome! I can help you with personal law queries. What would you like to know about property disputes, consumer rights, or personal injury?
+          .chat-input-container
+            input(type='text', id='chat-input', placeholder='Ask about personal law...', class='law-chat-input')
+            button#send-btn Send

@@ -1,6 +1,5 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
 const { body, validationResult } = require('express-validator');
 const User = require('../models/user');
 const router = express.Router();
@@ -37,32 +36,28 @@ router.post('/login', [
     const { email, password } = req.body;
     const user = await User.findOne({ email });
     
-    if (!user) {
+    if (!user || !(await bcrypt.compare(password, user.password))) {
       return res.status(400).render('login', { 
         title: 'Login - CivicaLex',
-        error: 'Invalid credentials'
+        errors: [{ msg: 'Invalid email or password' }]
       });
     }
 
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res.status(400).render('login', { 
-        title: 'Login - CivicaLex',
-        error: 'Invalid credentials'
-      });
-    }
-
-    const token = jwt.sign(
-      { userId: user._id, email: user.email },
-      process.env.JWT_SECRET || 'civicalex_jwt_secret',
-      { expiresIn: '7d' }
-    );
-
-    req.session.token = token;
+    // ✅ SESSION-BASED AUTH (NO JWT)
     req.session.userId = user._id;
-    res.redirect('/dashboard');
+    req.session.lastLogin = new Date();
+    req.session.save((err) => {
+      if (err) {
+        console.error('Session save error:', err);
+        return res.status(500).render('error', { 
+          title: 'Error', 
+          message: 'Session error during login' 
+        });
+      }
+      res.redirect('/dashboard');
+    });
   } catch (error) {
-    console.error(error);
+    console.error('Login error:', error);
     res.status(500).render('error', { 
       title: 'Error', 
       message: 'Server error during login' 
@@ -75,7 +70,7 @@ router.post('/register', [
   body('name').trim().isLength({ min: 2 }),
   body('email').isEmail().normalizeEmail(),
   body('password').isLength({ min: 6 }),
-  body('phone').optional().isMobilePhone('en-IN')
+  body('phone').optional().matches(/^(\+?91)?[6-9]\d{9}$/).withMessage('Invalid Indian phone number')
 ], async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -89,41 +84,44 @@ router.post('/register', [
     const { name, email, password, phone, address } = req.body;
     
     // Check if user already exists
-    let existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).render('register', { 
         title: 'Register - CivicaLex',
-        error: 'User already exists with this email'
+        errors: [{ msg: 'User already exists with this email' }]
       });
     }
 
     // Hash password
-    const salt = await bcrypt.genSalt(10);
+    const salt = await bcrypt.genSalt(12);
     const hashedPassword = await bcrypt.hash(password, salt);
 
     // Create new user
     const user = new User({
-      name,
-      email,
+      name: name.trim(),
+      email: email.toLowerCase().trim(),
       password: hashedPassword,
-      phone,
-      address
+      phone: phone ? phone.trim() : undefined,
+      address: address ? address.trim() : undefined
     });
 
     await user.save();
 
-    // Create JWT token
-    const token = jwt.sign(
-      { userId: user._id, email: user.email },
-      process.env.JWT_SECRET || 'civicalex_jwt_secret',
-      { expiresIn: '7d' }
-    );
-
-    req.session.token = token;
+    // ✅ SESSION-BASED AUTH (NO JWT)
     req.session.userId = user._id;
-    res.redirect('/dashboard');
+    req.session.lastLogin = new Date();
+    req.session.save((err) => {
+      if (err) {
+        console.error('Session save error:', err);
+        return res.status(500).render('error', { 
+          title: 'Error', 
+          message: 'Session error during registration' 
+        });
+      }
+      res.redirect('/dashboard');
+    });
   } catch (error) {
-    console.error(error);
+    console.error('Registration error:', error);
     res.status(500).render('error', { 
       title: 'Error', 
       message: 'Server error during registration' 
@@ -135,7 +133,11 @@ router.post('/register', [
 router.get('/logout', (req, res) => {
   req.session.destroy((err) => {
     if (err) {
-      console.error(err);
+      console.error('Logout error:', err);
+      return res.status(500).render('error', { 
+        title: 'Error', 
+        message: 'Error logging out' 
+      });
     }
     res.redirect('/');
   });

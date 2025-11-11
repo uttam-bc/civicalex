@@ -1,0 +1,65 @@
+// Criminal Law (views/law/criminal.pug)
+extends ../layouts/main
+
+block content
+  .law-container
+    .container
+      h1 Criminal Law
+      .law-section
+        h2 Step 1: What is Criminal Law about?
+        p Criminal law deals with conduct that is prohibited by the state because it threatens, harms, or otherwise endangers the safety and welfare of the public. In India, criminal law is primarily governed by the Indian Penal Code (IPC), 1860, and the Code of Criminal Procedure (CrPC), 1973.
+        p This area of law covers crimes against persons, property, public order, and the state, along with procedures for investigation, prosecution, and punishment.
+      
+      .law-section
+        h2 Step 2: Why do we need Criminal Law and Solutions?
+        h3 Why We Need Criminal Law:
+        ul
+          li Maintenance of public order and safety
+          li Deterrence of criminal behavior
+          li Protection of individual rights and property
+          li Rehabilitation of offenders
+          li Justice for victims and society
+        h3 Solutions:
+        ul
+          li Proper legal representation
+          li Understanding of rights during arrest and trial
+          li Bail application procedures
+          li Appeal and review processes
+          li Legal aid and support services
+      
+      .law-section
+        h2 Step 3: Help and Description
+        h3 Key Areas of Criminal Law:
+        .criminal-areas
+          .area-card
+            h4 Bail
+            p Procedures for securing temporary release during trial
+          .area-card
+            h4 Appeals
+            p Challenging convictions or sentences in higher courts
+          .area-card
+            h4 Representation
+            p Legal assistance during investigation and trial
+          .area-card
+            h4 Court Hearings
+            p Procedures and requirements for court appearances
+          .area-card
+            h4 Sentencing
+            p Types of punishment and mitigation strategies
+        h3 Important Procedures:
+        ul
+          li Arrest procedures and rights of arrested persons
+          li Investigation and evidence collection
+          li Filing of FIR and chargesheet
+          li Trial procedures and witness examination
+          li Appeal and revision processes
+      
+      .chatbot-section
+        h2 Criminal Law Chatbot
+        .chatbot-container
+          .chat-messages#chat-messages
+            .message.bot-message
+              p Welcome! I can help you with criminal law queries. What would you like to know about bail, appeals, or legal representation?
+          .chat-input-container
+            input(type='text', id='chat-input', placeholder='Ask about criminal law...', class='law-chat-input')
+            button#send-btn Send

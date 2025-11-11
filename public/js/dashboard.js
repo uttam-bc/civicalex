@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
   initializeCaseManagement();
   initializePetitionModule();
   initializeDocumentManagement();
+  initializeNotifications();
 });
 
 function initializeDashboard() {
@@ -107,28 +108,45 @@ function initializeCaseManagement() {
 }
 
 function submitCaseForm() {
-  const formData = new FormData(document.getElementById('add-case-form'));
-  const caseData = Object.fromEntries(formData.entries());
-  
-  // Validate form data
-  if (!caseData.title || !caseData.type || !caseData.court || !caseData.caseNumber) {
+ 
+  const form = document.getElementById('add-case-form');
+  const formData = new FormData(form);
+
+  // Client-side validation
+  if (!formData.get('title') || !formData.get('type') || !formData.get('court') || !formData.get('caseNumber')) {
     alert('Please fill in all required fields');
     return;
   }
-  
-  // In a real app, this would send data to the server
-  console.log('Submitting case:', caseData);
-  
-  // Show success message
-  alert('Case added successfully!');
-  
-  // Reset form
-  document.getElementById('add-case-form').reset();
+
+  fetch('/dashboard/add-case', {
+    method: 'POST',
+    body: formData
+  })
+  .then(response => {
+    if (response.ok) {
+      alert('Case added successfully!');
+      form.reset();
+      loadCases(); // Refresh list
+    } else {
+      return response.text().then(text => {
+        throw new Error(text.includes('error') ? 'Case number already exists' : 'Failed to add case');
+      });
+    }
+  })
+  .catch(err => {
+    console.error('Submission error:', err);
+    alert('Error: ' + err.message);
+  });
 }
 
-function loadCases() {
-  // Simulate loading cases from the server
-  console.log('Loading cases...');
+async function loadCases() {
+  try {
+    const response = await fetch('/api/cases'); // You'll need to create this API
+    const cases = await response.json();
+    // Render cases in UI
+  } catch (err) {
+    console.error('Failed to load cases');
+  }
 }
 
 function initializePetitionModule() {
@@ -146,23 +164,31 @@ function initializePetitionModule() {
 }
 
 function submitPetitionForm() {
-  const formData = new FormData(document.getElementById('add-petition-form'));
-  const petitionData = Object.fromEntries(formData.entries());
-  
-  // Validate form data
-  if (!petitionData.title || !petitionData.description || !petitionData.type) {
+  const form = document.getElementById('add-petition-form');
+  const formData = new FormData(form);
+
+  if (!formData.get('title') || !formData.get('description') || !formData.get('type')) {
     alert('Please fill in all required fields');
     return;
   }
-  
-  // In a real app, this would send data to the server
-  console.log('Submitting petition:', petitionData);
-  
-  // Show success message
-  alert('Petition added successfully!');
-  
-  // Reset form
-  document.getElementById('add-petition-form').reset();
+
+  fetch('/dashboard/add-petition', {
+    method: 'POST',
+    body: formData
+  })
+  .then(response => {
+    if (response.ok) {
+      alert('Petition added successfully!');
+      form.reset();
+      loadPetitions();
+    } else {
+      throw new Error('Failed to add petition');
+    }
+     })
+  .catch(err => {
+    console.error('Petition error:', err);
+    alert('Error: ' + err.message);
+  });
 }
 
 function loadPetitions() {
@@ -188,22 +214,32 @@ function initializeDocumentManagement() {
 }
 
 function submitDocumentForm() {
-  const formData = new FormData(document.getElementById('upload-document-form'));
-  
-  // Check if file is selected
+  const form = document.getElementById('upload-document-form');
+  const formData = new FormData(form);
+
   if (!formData.get('document')) {
     alert('Please select a document to upload');
     return;
   }
-  
-  // In a real app, this would send data to the server
-  console.log('Uploading document...');
-  
-  // Show success message
-  alert('Document uploaded successfully!');
-  
-  // Reset form
-  document.getElementById('upload-document-form').reset();
+
+  fetch('/dashboard/upload-document', {
+    method: 'POST',
+    body: formData
+  })
+  .then(response => {
+    if (response.ok) {
+      alert('Document uploaded successfully!');
+      form.reset();
+      } else {
+      return response.text().then(text => {
+        throw new Error(text.includes('access denied') ? 'Access denied' : 'Upload failed');
+      });
+    }
+  })
+  .catch(err => {
+    console.error('Upload error:', err);
+    alert('Error: ' + err.message);
+  });
 }
 
 function validateFileUpload(e) {
@@ -257,30 +293,33 @@ function trackPetitionProgress(petitionId) {
 
 // Function to view document
 function viewDocument(docId) {
-  // In a real app, this would open the document
-  console.log(`Viewing document ${docId}`);
-  window.open(`/uploads/document_${docId}.pdf`, '_blank');
+  // ✅ Opens in new tab via secure route
+  window.open(`/documents/${docId}/view`, '_blank');
 }
 
 // Function to download document
 function downloadDocument(docId) {
-  // In a real app, this would trigger the download
-  console.log(`Downloading document ${docId}`);
-  window.location.href = `/uploads/document_${docId}.pdf`;
-}
+  if (!confirm('Are you sure you want to delete this document?')) return;
 
-// Function to delete document
-function deleteDocument(docId) {
-  if (confirm('Are you sure you want to delete this document?')) {
-    // In a real app, this would delete the document from the server
-    console.log(`Deleting document ${docId}`);
-    
-    // Remove from UI
-    const docElement = document.querySelector(`[data-doc-id="${docId}"]`);
-    if (docElement) {
-      docElement.remove();
+  fetch(`/documents/${docId}/delete`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: `_csrf=${document.querySelector('input[name="_csrf"]').value}`
+  })
+  .then(response => {
+    if (response.ok) {
+      // Remove from UI
+      const docElement = document.querySelector(`[data-doc-id="${docId}"]`);
+      if (docElement) docElement.remove();
+    } else {
+      throw new Error('Delete failed');
     }
-  }
+  })
+  .catch(err => {
+    alert('Failed to delete document');
+  });
 }
 
 // Function to filter cases

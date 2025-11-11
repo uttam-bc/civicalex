@@ -1,0 +1,70 @@
+// Tax Law (views/law/tax.pug)
+extends ../layouts/main
+
+block content
+  .law-container
+    .container
+      h1 Tax Law (GST & Income Tax)
+      .law-section
+        h2 Step 1: What is Tax Law about?
+        p Tax law governs the system of government levies on economic transactions, including income, property, sales, and services. In India, the primary tax laws include the Income Tax Act, 1961, and the Goods and Services Tax (GST) regime introduced in 2017.
+        p Tax law encompasses the rules for tax calculation, collection, compliance, and dispute resolution. It affects individuals, businesses, and other entities, with different rates and procedures based on the taxpayer category and transaction type.
+      
+      .law-section
+        h2 Step 2: Why do we need Tax Law and Solutions?
+        h3 Why We Need Tax Law:
+        ul
+          li Funding government operations and public services
+          li Redistributing wealth and reducing inequality
+          li Regulating economic activities and consumption
+          li Promoting social and economic objectives
+          li Ensuring compliance and preventing tax evasion
+        h3 Solutions:
+        ul
+          li Proper tax planning and compliance strategies
+          li Regular filing of returns and payments
+          li Professional tax advisory services
+          li Use of technology for tax management
+          li Timely response to tax notices and proceedings
+      
+      .law-section
+        h2 Step 3: Help and Description
+        h3 GST (Goods and Services Tax):
+        .tax-areas
+          .area-card
+            h4 Registration
+            p Procedures for GST registration for businesses and individuals
+          .area-card
+            h4 Compulsory Requirements
+            p When registration is mandatory and compliance obligations
+          .area-card
+            h4 Filing
+            p Monthly, quarterly, and annual return filing procedures
+        h3 Income Tax:
+        .tax-areas
+          .area-card
+            h4 Registration
+            p PAN card requirements and income tax registration
+          .area-card
+            h4 Compulsory Requirements
+            p When returns must be filed and due dates
+          .area-card
+            h4 Filing
+            p ITR forms, deductions, and compliance procedures
+        h3 Important Aspects:
+        ul
+          li GST rates: 5%, 12%, 18%, 28% with exemptions
+          li Income tax slabs for different taxpayer categories
+          li Input tax credit mechanisms under GST
+          li Tax deduction at source (TDS) provisions
+          li Advance tax and self-assessment procedures
+      
+      .chatbot-section
+        h2 Tax Law Chatbot
+        .chatbot-container
+          .chat-messages#chat-messages
+            .message.bot-message
+              p Welcome! I can help you with tax law queries. What would you like to know about GST, income tax, or tax compliance?
+          .chat-input-container
+            input(type='text', id='chat-input', placeholder='Ask about tax law...', class='law-chat-input')
+            button#send-btn Send
