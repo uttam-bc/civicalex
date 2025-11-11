@@ -1,17 +1,4 @@
-// views/dashboard.pug
 extends layouts/main
-// In views/dashboard.pug
-each document in documents
-  .document-card
-    .document-icon 📄
-    .document-name= document.fileName
-    .document-type= document.mimeType
-    .document-actions
-      a.btn(href=`/documents/${document._id}/view`, target='_blank') View
-      a.btn(href=`/documents/${document._id}/download`) Download
-      form(action=`/documents/${document._id}/delete`, method='POST', style='display:inline')
-        input(type='hidden', name='_csrf', value=csrfToken)
-        button.btn.delete-btn(type='submit', onclick='return confirm("Delete this document?")') Delete
 
 block styles
   link(rel='stylesheet', href='/css/dashboard.css')
@@ -21,7 +8,12 @@ block content
     .dashboard-header
       .user-profile
         .profile-pic
-          img(src=user.profilePicture || '/images/profile-placeholder.jpg', alt='Profile Picture', width='80', height='80')
+          img(
+            src= user.profilePicture || '/images/profile-placeholder.jpg',
+            alt='Profile Picture for #{user.name}',
+            width='80',
+            height='80'
+          )
         .user-info
           h3= user.name
           p #{user.email}
@@ -30,7 +22,7 @@ block content
           if user.address
             p Address: #{user.address}
           p Last Login: #{user.lastLogin ? user.lastLogin.toLocaleString() : 'First Login'}
-    
+
     .quick-stats
       h2 Quick Stats
       .stats-grid
@@ -51,22 +43,23 @@ block content
         .stat-card
           h3 Actions
           .quick-actions
-            a(href='/dashboard/add-petition') Create Petition
-            a(href='/dashboard/add-case') Add Case
-            a(href='/dashboard/upload-document') Upload Documents
-    
+            a.btn(href='/dashboard/add-petition') Create Petition
+            a.btn(href='/dashboard/add-case') Add Case
+            a.btn(href='/dashboard/upload-document') Upload Documents
+
     .dashboard-sections
       .section
         h3 Case Management
         .section-content
           form#add-case-form(method='POST', action='/dashboard/add-case')
+            input(type='hidden', name='_csrf', value=csrfToken)
             .form-row
               .form-group
-                label Case Title
-                input(type='text', name='title', required, placeholder='Enter case title')
+                label(for='title') Case Title
+                input#title(type='text', name='title', required, placeholder='Enter case title')
               .form-group
-                label Case Type
-                select(name='type', required)
+                label(for='type') Case Type
+                select#type(name='type', required)
                   option(value='') Select Case Type
                   option(value='Civil') Civil
                   option(value='Criminal') Criminal
@@ -79,27 +72,27 @@ block content
                   option(value='Other') Other
             .form-row
               .form-group
-                label Court
-                input(type='text', name='court', required, placeholder='Enter court name')
+                label(for='court') Court
+                input#court(type='text', name='court', required, placeholder='Enter court name')
               .form-group
-                label Case Number
-                input(type='text', name='caseNumber', required, placeholder='Enter case number')
+                label(for='caseNumber') Case Number
+                input#caseNumber(type='text', name='caseNumber', required, placeholder='Enter case number')
             .form-row
               .form-group
-                label Plaintiff
-                input(type='text', name='plaintiff', required, placeholder='Enter plaintiff name')
+                label(for='plaintiff') Plaintiff
+                input#plaintiff(type='text', name='plaintiff', required, placeholder='Enter plaintiff name')
               .form-group
-                label Defendant
-                input(type='text', name='defendant', required, placeholder='Enter defendant name')
+                label(for='defendant') Defendant
+                input#defendant(type='text', name='defendant', required, placeholder='Enter defendant name')
             .form-row
               .form-group
-                label Filing Date
-                input(type='date', name='filingDate')
+                label(for='filingDate') Filing Date
+                input#filingDate(type='date', name='filingDate')
               .form-group
-                label Next Hearing
-                input(type='date', name='nextHearing')
+                label(for='nextHearing') Next Hearing
+                input#nextHearing(type='date', name='nextHearing')
             button(type='submit') Add Case
-          
+
           .cases-list
             h4 My Cases
             if cases && cases.length > 0
@@ -114,21 +107,22 @@ block content
                       p Next Hearing: #{case.nextHearing.toLocaleDateString()}
             else
               p No cases found. Create your first case!
-      
+
       .section
         h3 Petitions Module
         .section-content
           form#add-petition-form(method='POST', action='/dashboard/add-petition')
+            input(type='hidden', name='_csrf', value=csrfToken)
             .form-group
-              label Petition Title
-              input(type='text', name='title', required, placeholder='Enter petition title')
+              label(for='petition-title') Petition Title
+              input#petition-title(type='text', name='title', required, placeholder='Enter petition title')
             .form-group
-              label Description
-              textarea(name='description', rows='4', required, placeholder='Enter petition description')
+              label(for='petition-description') Description
+              textarea#petition-description(name='description', rows='4', required, placeholder='Enter petition description')
             .form-row
               .form-group
-                label Petition Type
-                select(name='type', required)
+                label(for='petition-type') Petition Type
+                select#petition-type(name='type', required)
                   option(value='') Select Petition Type
                   option(value='Civil Writ') Civil Writ
                   option(value='Criminal Petition') Criminal Petition
@@ -138,13 +132,13 @@ block content
                   option(value='Commercial Petition') Commercial Petition
             .form-row
               .form-group
-                label Court
-                input(type='text', name='court', required, placeholder='Enter court name')
+                label(for='petition-court') Court
+                input#petition-court(type='text', name='court', required, placeholder='Enter court name')
               .form-group
-                label Case Number
-                input(type='text', name='caseNumber', placeholder='Enter case number (if applicable)')
+                label(for='petition-caseNumber') Case Number
+                input#petition-caseNumber(type='text', name='caseNumber', placeholder='Enter case number (if applicable)')
             button(type='submit') Add Petition
-          
+
           .petitions-list
             h4 My Petitions
             if petitions && petitions.length > 0
@@ -159,18 +153,19 @@ block content
                       p Filed: #{petition.filingDate.toLocaleDateString()}
             else
               p No petitions found. Create your first petition!
-      
+
       .section
         h3 Documents / Evidence
         .section-content
           form#upload-document-form(method='POST', action='/dashboard/upload-document', enctype='multipart/form-data')
+            input(type='hidden', name='_csrf', value=csrfToken)
             .form-group
-              label Upload Document
-              input(type='file', name='document', required)
+              label(for='document-upload') Upload Document
+              input#document-upload(type='file', name='document', required, accept='.pdf,.doc,.docx,.txt,.jpg,.jpeg,.png')
             .form-row
               .form-group
-                label Category
-                select(name='category', required)
+                label(for='document-category') Category
+                select#document-category(name='category', required)
                   option(value='') Select Category
                   option(value='Evidence') Evidence
                   option(value='Affidavit') Affidavit
@@ -182,17 +177,17 @@ block content
                   option(value='Agreement') Agreement
                   option(value='Other') Other
               .form-group
-                label Description
-                input(type='text', name='description', placeholder='Enter document description')
+                label(for='document-description') Description
+                input#document-description(type='text', name='description', placeholder='Enter document description')
             .form-row
               .form-group
-                label Related to Case
-                input(type='text', name='caseId', placeholder='Case ID')
+                label(for='document-caseId') Related to Case
+                input#document-caseId(type='text', name='caseId', placeholder='Case ID')
               .form-group
-                label Related to Petition
-                input(type='text', name='petitionId', placeholder='Petition ID')
+                label(for='document-petitionId') Related to Petition
+                input#document-petitionId(type='text', name='petitionId', placeholder='Petition ID')
             button(type='submit') Upload Document
-          
+
           .documents-grid
             h4 My Documents
             if documents && documents.length > 0
@@ -202,12 +197,14 @@ block content
                   .document-name= document.fileName
                   .document-type= document.fileType
                   .document-actions
-                    button.view-btn(onclick=`viewDocument('${document._id}')`) View
-                    button.download-btn(onclick=`downloadDocument('${document._id}')`) Download
-                    button.delete-btn(onclick=`deleteDocument('${document._id}')`) Delete
+                    a.btn(href=`/documents/${document._id}/view`, target='_blank') View
+                    a.btn(href=`/documents/${document._id}/download`) Download
+                    form(action=`/documents/${document._id}/delete`, method='POST', style='display:inline')
+                      input(type='hidden', name='_csrf', value=csrfToken)
+                      button.btn.delete-btn(type='submit', onclick='return confirm("Delete this document?")') Delete
             else
               p No documents uploaded yet.
-      
+
       .section
         h3 Court Calendar
         .section-content
@@ -226,7 +223,7 @@ block content
                 li No upcoming hearings scheduled
             button#add-reminder-btn Add Reminder
             p You can sync with your external calendar for automatic reminders
-      
+
       .section
         h3 AI Legal Draft Assistant
         .section-content
@@ -237,7 +234,7 @@ block content
             .ai-chat-input-container
               input(type='text', id='ai-chat-input', placeholder='Ask about legal document drafting, templates, or legal procedures...')
               button#ai-send-btn Send
-      
+
       .section
         h3 Case Dashboard
         .section-content
@@ -246,11 +243,11 @@ block content
             button.filter-btn(data-filter='pending') Pending
             button.filter-btn(data-filter='closed') Closed
             button.filter-btn(data-filter='upcoming') Upcoming
-          
+
           .dashboard-search
             input(type='text', placeholder='Search cases...', id='case-search')
             button Search
-          
+
           .cases-list#dashboard-cases
             if allCases && allCases.length > 0
               each case in allCases
@@ -265,7 +262,7 @@ block content
                     p Last Updated: #{case.updatedAt.toLocaleDateString()}
             else
               p No cases found.
-      
+
       .section
         h3 Notifications
         .section-content

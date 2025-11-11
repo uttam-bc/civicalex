@@ -6,48 +6,49 @@ block content
       .hero-content
         h1 Trusted Legal Platform
         p CivicaLex simplifies access to legal and civic information for Indian citizens
-        .hero-image
-          img(src='/images/hero.jpg', alt='Legal Platform')
-  
+        .hero-buttons.mt-3
+          a.btn(href='/login') Log In
+          a.btn.secondary(href='/register') Create Account
+      .hero-image
+        img(
+          src='/images/hero.jpg'
+          alt='Indian citizens accessing legal information through the CivicaLex digital platform'
+          loading='lazy'
+          decoding='async'
+          width='600'
+          height='400'
+        )
+
   .chatbot-section
     .container
       h2 Ask Legal Questions
       .chatbot-container
-        .chat-messages#chat-messages
+        .chat-messages#chat-messages(aria-live="polite")
           .message.bot-message
             p Welcome to CivicaLex! How can I help you with legal information today?
         .chat-input-container
-          input(type='text', id='chat-input', placeholder='Ask anything about legal matters...')
+          input.law-chat-input#chat-input(
+            type='text'
+            aria-label='Ask a legal question'
+            placeholder='Ask anything about legal matters...'
+          )
           button#send-btn Send
-  
+
   .features-section
     .container
       h2 Features Available After Login
-      .features-grid
-        .feature-box
-          h3 Case Management
-          p Track and manage your legal cases efficiently
-        .feature-box
-          h3 Case Dashboard
-          p Comprehensive view of all your legal matters
-        .feature-box
-          h3 Petition Module
-          p Draft and submit legal petitions with ease
-        .feature-box
-          h3 Store Documents
-          p Securely store and organize legal documents
-        .feature-box
-          h3 Court Calendar
-          p Schedule and track court hearings
-        .feature-box
-          h3 AI Legal Draft Assistant
-          p Generate legal documents with AI assistance
-        .feature-box
-          h3 Create Petitions
-          p Create various types of legal petitions
-        .feature-box
-          h3 Legal Research
-          p Access comprehensive legal research tools
-        .feature-box
-          h3 List of Laws and Acts
-          p Browse all Indian laws and legal acts
+      .features-grid(style='display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;')
+        each feature in features || [
+          { title: 'Case Management', desc: 'Track and manage your legal cases efficiently' },
+          { title: 'Case Dashboard', desc: 'Comprehensive view of all your legal matters' },
+          { title: 'Petition Module', desc: 'Draft and submit legal petitions with ease' },
+          { title: 'Store Documents', desc: 'Securely store and organize legal documents' },
+          { title: 'Court Calendar', desc: 'Schedule and track court hearings' },
+          { title: 'AI Legal Draft Assistant', desc: 'Generate legal documents with AI assistance' },
+          { title: 'Create Petitions', desc: 'Create various types of legal petitions' },
+          { title: 'Legal Research', desc: 'Access comprehensive legal research tools' },
+          { title: 'List of Laws and Acts', desc: 'Browse all Indian laws and legal acts' }
+        ]
+          .feature-box
+            h3= feature.title
+            p= feature.description

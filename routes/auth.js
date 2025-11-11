@@ -4,11 +4,18 @@ const { body, validationResult } = require('express-validator');
 const User = require('../models/user');
 const router = express.Router();
 
-// Home page
+// routes/auth.js
 router.get('/', (req, res) => {
-  res.render('home', { title: 'CivicaLex - Trusted Legal Platform' });
+  const features = [
+    { title: 'Case Management', desc: 'Track and manage your legal cases efficiently' },
+    { title: 'Petition Module', desc: 'Draft and submit legal petitions with ease' },
+    // ... all 9 features
+  ];
+  res.render('home', { 
+    title: 'CivicaLex - Trusted Legal Platform',
+    features 
+  });
 });
-
 // Login page
 router.get('/login', (req, res) => {
   res.render('login', { title: 'Login - CivicaLex' });
