@@ -31,12 +31,12 @@ const userSchema = new mongoose.Schema({
     trim: true,
     validate: {
       validator: function(v) {
-       // Allow null, undefined, or empty string
-      if (!v || v === '') return true;
-      // Allow any string with length
-      return typeof v === 'string';
+        // Allow empty or null
+        if (!v || v === '') return true;
+        // Must be a string with 10-15 characters (digits, spaces, +, -, ())
+        return /^[\d\s\+\-\(\)]{10,15}$/.test(v);
       },
-      message: 'Please provide a valid 10-digit Indian phone number'
+      message: 'Please provide a valid phone number (10-15 digits)'
     }
   },
   address: {
@@ -67,7 +67,6 @@ const userSchema = new mongoose.Schema({
     validate: {
       validator: function(v) {
         if (!v) return true;
-        // Only allow relative paths to prevent external URLs
         return /^\/images\/.*\.(jpg|jpeg|png|gif)$/i.test(v);
       },
       message: 'Invalid profile picture path'
@@ -78,12 +77,11 @@ const userSchema = new mongoose.Schema({
     default: Date.now
   }
 }, {
-  timestamps: true // adds updatedAt
+  timestamps: true
 });
 
 // ✅ Hash password before saving
 userSchema.pre('save', async function(next) {
-  // Only hash if password is modified
   if (!this.isModified('password')) return next();
   
   try {

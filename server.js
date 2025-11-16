@@ -6,11 +6,7 @@ const dotenv = require('dotenv');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const csrf = require('csurf');
-const validator = require('validator');
 
-
-
-// Load environment variables
 dotenv.config();
 
 // Validate required environment variables
@@ -22,9 +18,7 @@ for (const envVar of requiredEnv) {
   }
 }
 
-// Initialize Express app
 const app = express();
-
 
 // 🔒 Security middleware
 app.use(helmet({
@@ -59,6 +53,7 @@ const generalLimiter = rateLimit({
 app.use('/login', authLimiter);
 app.use('/register', authLimiter);
 app.use(generalLimiter);
+
 const uploadLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 10,
@@ -72,29 +67,16 @@ app.use('/api', rateLimit({ windowMs: 15 * 60 * 1000, max: 50 }));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: false, limit: '10mb' }));
 
-// 🧼 Input sanitization (using validator)
+// ✅ FIXED: Sanitization that doesn't break validation
 app.use((req, res, next) => {
   if (req.body) {
     Object.keys(req.body).forEach(key => {
       if (typeof req.body[key] === 'string' && req.body[key].length > 0) {
-        // Don't sanitize phone numbers - keep them as is
-        if (key === 'phone') {
-          req.body[key] = req.body[key].trim();
-          return;
-        }
-        
-        // Remove potential NoSQL injection characters for other fields
+        // Just trim whitespace and remove NoSQL injection chars
+        // DON'T escape HTML - let express-validator handle that AFTER validation
         req.body[key] = req.body[key].trim()
           .replace(/\$/g, '')
           .replace(/\./g, '');
-        
-        // Escape HTML entities for other fields
-        try {
-          req.body[key] = validator.escape(req.body[key]);
-        } catch (error) {
-          console.log(`Error escaping field ${key}:`, error);
-          req.body[key] = req.body[key].trim();
-        }
       }
     });
   }
@@ -138,7 +120,7 @@ app.use('/uploads', (req, res, next) => {
 });
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URI,{
+mongoose.connect(process.env.MONGODB_URI, {
   maxPoolSize: 10,
   serverSelectionTimeoutMS: 5000,
   socketTimeoutMS: 45000,
@@ -157,14 +139,12 @@ app.use('/act', require('./routes/act'));
 app.use('/services', require('./routes/services'));
 app.use('/documents', require('./routes/document'));
 app.use('/api', require('./routes/api'));
-
 app.use('/about', require('./routes/about'));
 app.use('/contact', require('./routes/contact'));
 app.use('/profile', require('./routes/profile'));
 app.use('/cases', require('./routes/cases'));
 app.use('/petitions', require('./routes/petition'));
 app.use('/search', require('./routes/search'));
-
 
 app.get('/privacy', (req, res) => {
   res.render('privacy', { 
@@ -179,7 +159,7 @@ app.get('/terms', (req, res) => {
     user: req.session.userId ? { _id: req.session.userId } : null
   });
 });
-// FAQ page
+
 app.get('/faq', (req, res) => {
   res.render('faq', {
     title: 'FAQ - CivicaLex',
@@ -191,7 +171,6 @@ app.get('/faq', (req, res) => {
 app.use((err, req, res, next) => {
   console.error('❌ Server Error:', err.stack);
   
-  // Handle CSRF errors
   if (err.code === 'EBADCSRFTOKEN') {
     return res.status(403).render('error', { 
       title: 'Security Error', 
