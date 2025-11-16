@@ -56,17 +56,29 @@ const generalLimiter = rateLimit({
 app.use('/login', authLimiter);
 app.use('/register', authLimiter);
 app.use(generalLimiter);
+const uploadLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  message: 'Too many uploads. Please try again later.'
+});
+
+app.use('/dashboard/upload-document', uploadLimiter);
+app.use('/api', rateLimit({ windowMs: 15 * 60 * 1000, max: 50 }));
 
 // Middleware - ORDER MATTERS!
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: false, limit: '10mb' }));
 
 // 🧼 Input sanitization
+const xss = require('xss');
+const mongoSanitize = require('express-mongo-sanitize');
+
+app.use(mongoSanitize()); // Prevent NoSQL injection
 app.use((req, res, next) => {
   if (req.body) {
     Object.keys(req.body).forEach(key => {
       if (typeof req.body[key] === 'string') {
-        req.body[key] = validator.escape(req.body[key].trim());
+        req.body[key] = xss(req.body[key].trim()); // Better XSS protection
       }
     });
   }
@@ -110,7 +122,11 @@ app.use('/uploads', (req, res, next) => {
 });
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URI)
+mongoose.connect(process.env.MONGODB_URI,{
+  maxPoolSize: 10,
+  serverSelectionTimeoutMS: 5000,
+  socketTimeoutMS: 45000,
+})
   .then(() => console.log('✅ MongoDB connected'))
   .catch(err => {
     console.error('❌ MongoDB connection error:', err);
@@ -124,7 +140,7 @@ app.use('/law', require('./routes/law'));
 app.use('/act', require('./routes/act'));
 app.use('/services', require('./routes/services'));
 app.use('/documents', require('./routes/document'));
-app.use('/api', require('./routes/api'));
+app.use('/api', require('./routes/api/v1'));
 
 // Error handling middleware
 app.use((err, req, res, next) => {

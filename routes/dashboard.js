@@ -11,14 +11,17 @@ const router = express.Router();
 
 // Configure secure multer for file uploads
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    // ✅ Store files outside public/ directory
-    cb(null, path.join(__dirname, '../private_uploads/'));
-  },
   filename: (req, file, cb) => {
-    // ✅ Generate unique filename with timestamp
-    cb(null, Date.now() + '-' + Math.round(Math.random() * 1E9) + path.extname(file.originalname));
+  const sanitizedName = file.originalname.replace(/[^a-zA-Z0-9.-]/g, '_');
+  const ext = path.extname(sanitizedName).toLowerCase();
+  const allowedExts = ['.pdf', '.doc', '.docx', '.txt', '.jpg', '.jpeg', '.png', '.gif'];
+  
+  if (!allowedExts.includes(ext)) {
+    return cb(new Error('Invalid file extension'));
   }
+  
+  cb(null, `${Date.now()}-${crypto.randomBytes(8).toString('hex')}${ext}`);
+}
 });
 
 const fileFilter = (req, file, cb) => {
@@ -39,7 +42,7 @@ const upload = multer({
   fileFilter: fileFilter
 });
 
-// Dashboard home
+// routes/dashboard.js
 router.get('/', authenticateSession, async (req, res) => {
   try {
     const userId = req.session.userId;
@@ -67,6 +70,15 @@ router.get('/', authenticateSession, async (req, res) => {
     const recentPetitions = await Petition.find({ userId }).sort({ createdAt: -1 }).limit(5);
     const recentDocuments = await Document.find({ userId }).sort({ createdAt: -1 }).limit(5);
     
+    // ✅ Get upcoming hearings (for calendar section)
+    const upcomingHearings = await Case.find({ 
+      userId, 
+      nextHearing: { $gte: new Date() } 
+    }).sort({ nextHearing: 1 }).limit(5);
+    
+    // ✅ Get all cases for the dashboard section
+    const allCases = await Case.find({ userId }).sort({ createdAt: -1 });
+
     res.render('dashboard', {
       title: 'Dashboard - CivicaLex',
       user,
@@ -75,7 +87,7 @@ router.get('/', authenticateSession, async (req, res) => {
         totalPetitions,
         pendingCases,
         closedCases,
-        upcomingCases,
+        upcomingCases,  // ✅ This is now defined
         draftedPetitions,
         submittedPetitions,
         approvedPetitions
@@ -83,8 +95,8 @@ router.get('/', authenticateSession, async (req, res) => {
       cases: recentCases,
       petitions: recentPetitions,
       documents: recentDocuments,
-      // Add upcoming hearings for calendar
-      upcomingHearings: recentCases.filter(c => c.nextHearing && c.nextHearing >= new Date()).slice(0, 5)
+      upcomingHearings,  // ✅ This is now defined
+      allCases          // ✅ This is now defined
     });
   } catch (error) {
     console.error('Dashboard error:', error);
@@ -94,7 +106,6 @@ router.get('/', authenticateSession, async (req, res) => {
     });
   }
 });
-
 // Add new case
 router.post('/add-case', authenticateSession, async (req, res) => {
   try {
@@ -232,6 +243,7 @@ router.post('/upload-document', authenticateSession, upload.single('document'), 
     res.redirect('/dashboard');
   } catch (error) {
     console.error('Upload document error:', error);
+     alert('Error: ' + error.message); 
     res.status(500).render('error', { 
       title: 'Error', 
       message: 'Server error uploading document' 
