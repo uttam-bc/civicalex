@@ -1,0 +1,114 @@
+extends layouts/main
+
+block styles
+  link(rel='stylesheet', href='/css/dashboard.css')
+
+block content
+  .profile-container
+    .container
+      h1 My Profile
+      
+      if success
+        .success-message= success
+      
+      if error
+        .error-message= error
+      
+      if errors && errors.length
+        .error-message
+          ul
+            each err in errors
+              li= err.msg
+      
+      .profile-content
+        .profile-section
+          h2 Personal Information
+          form(method='POST', action='/profile/update')
+            input(type='hidden', name='_csrf', value=csrfToken)
+            
+            .form-group
+              label(for='name') Full Name
+              input#name(
+                type='text',
+                name='name',
+                value=user.name,
+                required
+              )
+            
+            .form-group
+              label(for='email') Email Address
+              input#email(
+                type='email',
+                name='email',
+                value=user.email,
+                disabled
+              )
+              small Email cannot be changed. Contact support if needed.
+            
+            .form-group
+              label(for='phone') Phone Number
+              input#phone(
+                type='tel',
+                name='phone',
+                value=user.phone || '',
+                pattern='^\\+?91[6-9]\\d{9}$'
+              )
+            
+            .form-group
+              label(for='address') Address
+              textarea#address(
+                name='address',
+                rows='3'
+              )= user.address || ''
+            
+            button(type='submit') Update Profile
+        
+        .profile-section
+          h2 Change Password
+          form(method='POST', action='/profile/change-password')
+            input(type='hidden', name='_csrf', value=csrfToken)
+            
+            .form-group
+              label(for='currentPassword') Current Password
+              input#currentPassword(
+                type='password',
+                name='currentPassword',
+                required
+              )
+            
+            .form-group
+              label(for='newPassword') New Password
+              input#newPassword(
+                type='password',
+                name='newPassword',
+                minlength='6',
+                required
+              )
+              small Minimum 6 characters
+            
+            .form-group
+              label(for='confirmPassword') Confirm New Password
+              input#confirmPassword(
+                type='password',
+                name='confirmPassword',
+                minlength='6',
+                required
+              )
+            
+            button(type='submit') Change Password
+        
+        .profile-section
+          h2 Account Information
+          .account-info
+            p #[strong Account Created:] #{user.createdAt.toLocaleDateString()}
+            p #[strong Last Login:] #{user.lastLogin ? user.lastLogin.toLocaleDateString() : 'N/A'}
+            p #[strong Account Status:] #{user.active ? 'Active' : 'Inactive'}
+            p #[strong Email Verified:] #{user.isEmailVerified ? 'Yes' : 'No'}
+        
+        .profile-section
+          h2 Account Actions
+          .account-actions
+            a.btn.secondary(href='/dashboard') Back to Dashboard
+            button.btn.danger(
+              onclick='return confirm("Are you sure you want to delete your account? This action cannot be undone.")'
+            ) Delete Account

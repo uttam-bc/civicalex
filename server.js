@@ -8,6 +8,8 @@ const rateLimit = require('express-rate-limit');
 const csrf = require('csurf');
 const validator = require('validator');
 
+
+
 // Load environment variables
 dotenv.config();
 
@@ -22,6 +24,7 @@ for (const envVar of requiredEnv) {
 
 // Initialize Express app
 const app = express();
+
 
 // 🔒 Security middleware
 app.use(helmet({
@@ -141,6 +144,35 @@ app.use('/act', require('./routes/act'));
 app.use('/services', require('./routes/services'));
 app.use('/documents', require('./routes/document'));
 app.use('/api', require('./routes/api/v1'));
+
+app.use('/about', require('./routes/about'));
+app.use('/contact', require('./routes/contact'));
+app.use('/profile', require('./routes/profile'));
+app.use('/cases', require('./routes/cases'));
+app.use('/petitions', require('./routes/petition'));
+app.use('/search', require('./routes/search'));
+
+
+app.get('/privacy', (req, res) => {
+  res.render('privacy', { 
+    title: 'Privacy Policy - CivicaLex',
+    user: req.session.userId ? { _id: req.session.userId } : null
+  });
+});
+
+app.get('/terms', (req, res) => {
+  res.render('terms', { 
+    title: 'Terms of Service - CivicaLex',
+    user: req.session.userId ? { _id: req.session.userId } : null
+  });
+});
+// FAQ page
+app.get('/faq', (req, res) => {
+  res.render('faq', {
+    title: 'FAQ - CivicaLex',
+    user: req.session.userId ? { _id: req.session.userId } : null
+  });
+});
 
 // Error handling middleware
 app.use((err, req, res, next) => {

@@ -1,0 +1,124 @@
+extends layouts/main
+
+block content
+  .contact-container
+    .container
+      h1 Contact Us
+      
+      .contact-content
+        .contact-info
+          h2 Get in Touch
+          
+          .contact-details
+            .contact-item
+              h3 📧 Email
+              p 
+                a(href=`mailto:${process.env.CONTACT_EMAIL || 'info@civicalex.in'}`) #{process.env.CONTACT_EMAIL || 'info@civicalex.in'}
+            
+            .contact-item
+              h3 📞 Phone
+              p 
+                a(href=`tel:${process.env.CONTACT_PHONE || '+919876543210'}`) #{process.env.CONTACT_PHONE || '+91 98765 43210'}
+            
+            .contact-item
+              h3 📍 Address
+              p Supreme Court Complex
+              p New Delhi - 110001
+              p India
+            
+            .contact-item
+              h3 🕐 Office Hours
+              p Monday - Friday: 9:00 AM - 6:00 PM
+              p Saturday: 10:00 AM - 2:00 PM
+              p Sunday: Closed
+        
+        .contact-form-section
+          h2 Send Us a Message
+          
+          if success
+            .success-message= success
+          
+          if error
+            .error-message= error
+          
+          if errors && errors.length
+            .error-message
+              ul
+                each err in errors
+                  li= err.msg
+          
+          form.contact-form(method='POST', action='/contact')
+            input(type='hidden', name='_csrf', value=csrfToken)
+            
+            .form-group
+              label(for='name') Full Name *
+              input#name(
+                type='text',
+                name='name',
+                required,
+                placeholder='Enter your full name'
+              )
+            
+            .form-group
+              label(for='email') Email Address *
+              input#email(
+                type='email',
+                name='email',
+                required,
+                placeholder='your.email@example.com'
+              )
+            
+            .form-group
+              label(for='phone') Phone Number
+              input#phone(
+                type='tel',
+                name='phone',
+                placeholder='+91 98765 43210'
+              )
+            
+            .form-group
+              label(for='subject') Subject *
+              select#subject(name='subject', required)
+                option(value='') Select a subject
+                option(value='general') General Inquiry
+                option(value='legal-aid') Legal Aid Request
+                option(value='technical') Technical Support
+                option(value='partnership') Partnership Opportunity
+                option(value='feedback') Feedback/Suggestions
+                option(value='complaint') Complaint
+                option(value='other') Other
+            
+            .form-group
+              label(for='message') Message *
+              textarea#message(
+                name='message',
+                rows='6',
+                required,
+                placeholder='Please describe your inquiry in detail...'
+              )
+            
+            .form-group
+              label(for='urgent')
+                input#urgent(type='checkbox', name='urgent')
+                |  This is an urgent matter
+            
+            button(type='submit') Send Message
+      
+      .contact-faq
+        h2 Frequently Asked Questions
+        
+        .faq-item
+          h3 How quickly will I receive a response?
+          p We aim to respond to all inquiries within 24-48 hours during business days. Urgent matters are prioritized.
+        
+        .faq-item
+          h3 Can I schedule a consultation?
+          p Yes, you can request a consultation through this form or by calling our office directly.
+        
+        .faq-item
+          h3 Do you provide free legal advice?
+          p We provide general legal information. For specific legal advice, please register on our platform to access our legal aid services.
+        
+        .faq-item
+          h3 How can I report a technical issue?
+          p Please select "Technical Support" in the subject field and provide detailed information about the issue you're experiencing.
