@@ -1,0 +1,78 @@
+extends layouts/main
+
+block styles
+  link(rel='stylesheet', href='/css/dashboard.css')
+
+block content
+  .petition-detail-container
+    .container
+      .breadcrumb
+        a(href='/dashboard') Dashboard
+        |  > 
+        a(href='/dashboard#petitions') Petitions
+        |  > 
+        span= petition.title
+      
+      h1= petition.title
+      
+      .petition-header
+        .petition-status(class=`status-${petition.status.toLowerCase()}`)
+          | #{petition.status}
+        .petition-meta
+          p #[strong Type:] #{petition.type}
+          if petition.court
+            p #[strong Court:] #{petition.court}
+          if petition.caseNumber
+            p #[strong Case Number:] #{petition.caseNumber}
+          if petition.filingDate
+            p #[strong Filing Date:] #{petition.filingDate.toLocaleDateString()}
+          if petition.nextHearing
+            p #[strong Next Hearing:] #{petition.nextHearing.toLocaleDateString()}
+      
+      .petition-details
+        .section
+          h2 Petition Description
+          p= petition.description
+        
+        .section
+          h2 Documents
+          .documents-list
+            if documents && documents.length > 0
+              each doc in documents
+                .document-item
+                  .document-icon 📄
+                  .document-info
+                    h4= doc.fileName
+                    p= doc.category
+                    p.text-muted Uploaded: #{doc.createdAt.toLocaleDateString()}
+                  .document-actions
+                    a.btn(href=`/documents/${doc._id}/view`, target='_blank') View
+                    a.btn(href=`/documents/${doc._id}/download`) Download
+            else
+              p No documents uploaded for this petition
+          
+          a.btn(href=`/dashboard#upload-document-form`) Upload Document
+        
+        .section
+          h2 Petition Actions
+          .petition-actions
+            a.btn(href=`/petitions/${petition._id}/edit`) Edit Petition
+            
+            form(method='POST', action=`/petitions/${petition._id}/change-status`, style='display:inline')
+              input(type='hidden', name='_csrf', value=csrfToken)
+              select(name='status', required)
+                option(value='Draft', selected=petition.status === 'Draft') Draft
+                option(value='Submitted', selected=petition.status === 'Submitted') Submitted
+                option(value='Under Review', selected=petition.status === 'Under Review') Under Review
+                option(value='Approved', selected=petition.status === 'Approved') Approved
+                option(value='Regret', selected=petition.status === 'Regret') Regret
+              button.btn(type='submit') Update Status
+            
+            if petition.status === 'Draft'
+              form(method='POST', action=`/petitions/${petition._id}/submit`, style='display:inline')
+                input(type='hidden', name='_csrf', value=csrfToken)
+                button.btn.primary(type='submit') Submit Petition
+            
+            form(method='POST', action=`/petitions/${petition._id}/delete`, onsubmit='return confirm("Are you sure you want to delete this petition?")', style='display:inline')
+              input(type='hidden', name='_csrf', value=csrfToken)
+              button.btn.danger(type='submit') Delete Petition

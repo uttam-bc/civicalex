@@ -8,6 +8,8 @@ const rateLimit = require('express-rate-limit');
 const csrf = require('csurf');
 const validator = require('validator');
 
+
+
 // Load environment variables
 dotenv.config();
 
@@ -22,6 +24,7 @@ for (const envVar of requiredEnv) {
 
 // Initialize Express app
 const app = express();
+
 
 // 🔒 Security middleware
 app.use(helmet({
@@ -69,16 +72,29 @@ app.use('/api', rateLimit({ windowMs: 15 * 60 * 1000, max: 50 }));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: false, limit: '10mb' }));
 
-// 🧼 Input sanitization
-const xss = require('xss');
-const mongoSanitize = require('express-mongo-sanitize');
-
-app.use(mongoSanitize()); // Prevent NoSQL injection
+// 🧼 Input sanitization (using validator)
 app.use((req, res, next) => {
   if (req.body) {
     Object.keys(req.body).forEach(key => {
-      if (typeof req.body[key] === 'string') {
-        req.body[key] = xss(req.body[key].trim()); // Better XSS protection
+      if (typeof req.body[key] === 'string' && req.body[key].length > 0) {
+        // Don't sanitize phone numbers - keep them as is
+        if (key === 'phone') {
+          req.body[key] = req.body[key].trim();
+          return;
+        }
+        
+        // Remove potential NoSQL injection characters for other fields
+        req.body[key] = req.body[key].trim()
+          .replace(/\$/g, '')
+          .replace(/\./g, '');
+        
+        // Escape HTML entities for other fields
+        try {
+          req.body[key] = validator.escape(req.body[key]);
+        } catch (error) {
+          console.log(`Error escaping field ${key}:`, error);
+          req.body[key] = req.body[key].trim();
+        }
       }
     });
   }
@@ -140,7 +156,36 @@ app.use('/law', require('./routes/law'));
 app.use('/act', require('./routes/act'));
 app.use('/services', require('./routes/services'));
 app.use('/documents', require('./routes/document'));
-app.use('/api', require('./routes/api/v1'));
+app.use('/api', require('./routes/api'));
+
+app.use('/about', require('./routes/about'));
+app.use('/contact', require('./routes/contact'));
+app.use('/profile', require('./routes/profile'));
+app.use('/cases', require('./routes/cases'));
+app.use('/petitions', require('./routes/petition'));
+app.use('/search', require('./routes/search'));
+
+
+app.get('/privacy', (req, res) => {
+  res.render('privacy', { 
+    title: 'Privacy Policy - CivicaLex',
+    user: req.session.userId ? { _id: req.session.userId } : null
+  });
+});
+
+app.get('/terms', (req, res) => {
+  res.render('terms', { 
+    title: 'Terms of Service - CivicaLex',
+    user: req.session.userId ? { _id: req.session.userId } : null
+  });
+});
+// FAQ page
+app.get('/faq', (req, res) => {
+  res.render('faq', {
+    title: 'FAQ - CivicaLex',
+    user: req.session.userId ? { _id: req.session.userId } : null
+  });
+});
 
 // Error handling middleware
 app.use((err, req, res, next) => {

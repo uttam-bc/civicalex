@@ -1,0 +1,85 @@
+extends layouts/main
+
+block content
+  .services-container
+    .container
+      h1 Our Services
+      p.lead Comprehensive legal services to support your legal needs
+      
+      .services-grid
+        .service-card
+          .service-icon 📚
+          h3 Legal Awareness
+          p Understanding your legal rights and responsibilities
+          ul
+            li Fundamental Rights Education
+            li Consumer Protection
+            li Women's Rights
+            li Child Rights
+            li Property Rights
+          a.btn(href='/services/awareness') Learn More
+        
+        .service-card
+          .service-icon ⚖️
+          h3 Legal Aid
+          p Free and low-cost legal assistance for those in need
+          ul
+            li Free Legal Consultation
+            li Court Representation
+            li Document Preparation
+            li Mediation Services
+            li Legal Awareness Programs
+          a.btn(href='/services/aid') Apply for Legal Aid
+        
+        .service-card
+          .service-icon 🏛️
+          h3 Litigation Support
+          p Professional legal representation in court proceedings
+          ul
+            li Civil Litigation
+            li Criminal Defense
+            li Commercial Disputes
+            li Family Law
+            li Constitutional Matters
+          a.btn(href='/services/litigation') Request Services
+        
+        .service-card
+          .service-icon 🔍
+          h3 Legal Research
+          p Access to comprehensive legal databases and research tools
+          ul
+            li Case Law Research
+            li Statutory Research
+            li Legal Opinions
+            li Compliance Research
+            li Expert Analysis
+          a.btn(href='/services/research') Access Resources
+      
+      .services-benefits
+        h2 Why Choose CivicaLex?
+        .benefits-grid
+          .benefit-item
+            h4 ✓ Expert Guidance
+            p Access to qualified legal professionals
+          .benefit-item
+            h4 ✓ Affordable Services
+            p Competitive pricing and free legal aid options
+          .benefit-item
+            h4 ✓ Technology-Driven
+            p Modern tools for efficient case management
+          .benefit-item
+            h4 ✓ Comprehensive Resources
+            p Extensive database of laws and legal information
+          .benefit-item
+            h4 ✓ Secure Platform
+            p Your data is protected with industry-standard security
+          .benefit-item
+            h4 ✓ 24/7 Access
+            p Manage your legal matters anytime, anywhere
+      
+      .services-cta
+        h2 Ready to Get Started?
+        p Register now to access all our services and manage your legal matters efficiently
+        .cta-buttons
+          a.btn.primary(href='/register') Create Account
+          a.btn.secondary(href='/contact') Contact Us

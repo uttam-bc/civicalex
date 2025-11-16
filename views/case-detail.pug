@@ -1,0 +1,126 @@
+extends layouts/main
+
+block styles
+  link(rel='stylesheet', href='/css/dashboard.css')
+
+block content
+  .case-detail-container
+    .container
+      .breadcrumb
+        a(href='/dashboard') Dashboard
+        |  > 
+        a(href='/dashboard#cases') Cases
+        |  > 
+        span= caseData.title
+      
+      h1= caseData.title
+      
+      .case-header
+        .case-status(class=`status-${caseData.status.toLowerCase()}`)
+          | #{caseData.status}
+        .case-meta
+          p #[strong Case Number:] #{caseData.caseNumber}
+          p #[strong Court:] #{caseData.court}
+          p #[strong Type:] #{caseData.type}
+          if caseData.filingDate
+            p #[strong Filing Date:] #{caseData.filingDate.toLocaleDateString()}
+          if caseData.nextHearing
+            p #[strong Next Hearing:] #{caseData.nextHearing.toLocaleDateString()}
+      
+      .case-details
+        .section
+          h2 Case Information
+          if caseData.description
+            .case-description
+              h3 Description
+              p= caseData.description
+          
+          .parties-info
+            h3 Parties
+            .form-row
+              .form-group
+                label Plaintiff
+                p= caseData.parties.plaintiff || 'Not specified'
+              .form-group
+                label Defendant
+                p= caseData.parties.defendant || 'Not specified'
+        
+        .section
+          h2 Timeline
+          .timeline
+            if caseData.timeline && caseData.timeline.length > 0
+              each event in caseData.timeline
+                .timeline-item
+                  .timeline-date= event.date.toLocaleDateString()
+                  .timeline-content
+                    h4= event.action
+                    if event.description
+                      p= event.description
+            else
+              p No timeline events recorded yet
+          
+          .add-timeline-event
+            h3 Add Timeline Event
+            form(method='POST', action=`/cases/${caseData._id}/add-event`)
+              input(type='hidden', name='_csrf', value=csrfToken)
+              .form-group
+                label Action/Event
+                input(type='text', name='action', required)
+              .form-group
+                label Description
+                textarea(name='description', rows='3')
+              .form-group
+                label Date
+                input(type='date', name='date', required)
+              button(type='submit') Add Event
+        
+        .section
+          h2 Documents
+          .documents-list
+            if documents && documents.length > 0
+              each doc in documents
+                .document-item
+                  .document-icon 📄
+                  .document-info
+                    h4= doc.fileName
+                    p= doc.category
+                    p.text-muted Uploaded: #{doc.createdAt.toLocaleDateString()}
+                  .document-actions
+                    a.btn(href=`/documents/${doc._id}/view`, target='_blank') View
+                    a.btn(href=`/documents/${doc._id}/download`) Download
+            else
+              p No documents uploaded for this case
+          
+          a.btn(href=`/dashboard#upload-document-form`) Upload Document
+        
+        .section
+          h2 Notifications
+          .notifications-list
+            if caseData.notifications && caseData.notifications.length > 0
+              each notification in caseData.notifications
+                .notification-item(class=notification.isRead ? 'read' : 'unread')
+                  p= notification.message
+                  p.text-muted= notification.date.toLocaleDateString()
+                  if !notification.isRead
+                    form(method='POST', action=`/cases/${caseData._id}/mark-read/${notification._id}`, style='display:inline')
+                      input(type='hidden', name='_csrf', value=csrfToken)
+                      button.btn.small(type='submit') Mark as Read
+            else
+              p No notifications for this case
+        
+        .section
+          h2 Case Actions
+          .case-actions
+            a.btn(href=`/cases/${caseData._id}/edit`) Edit Case
+            form(method='POST', action=`/cases/${caseData._id}/change-status`, style='display:inline')
+              input(type='hidden', name='_csrf', value=csrfToken)
+              select(name='status', required)
+                option(value='Pending', selected=caseData.status === 'Pending') Pending
+                option(value='Active', selected=caseData.status === 'Active') Active
+                option(value='Upcoming', selected=caseData.status === 'Upcoming') Upcoming
+                option(value='Closed', selected=caseData.status === 'Closed') Closed
+              button.btn(type='submit') Update Status
+            
+            form(method='POST', action=`/cases/${caseData._id}/delete`, onsubmit='return confirm("Are you sure you want to delete this case?")', style='display:inline')
+              input(type='hidden', name='_csrf', value=csrfToken)
+              button.btn.danger(type='submit') Delete Case

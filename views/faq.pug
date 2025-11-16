@@ -1,0 +1,158 @@
+extends layouts/main
+
+block content
+  .faq-container
+    .container
+      h1 Frequently Asked Questions
+      
+      .faq-search
+        input(type='text', id='faq-search', placeholder='Search FAQs...')
+      
+      .faq-categories
+        button.faq-category-btn.active(data-category='all') All
+        button.faq-category-btn(data-category='general') General
+        button.faq-category-btn(data-category='account') Account
+        button.faq-category-btn(data-category='legal') Legal Services
+        button.faq-category-btn(data-category='technical') Technical
+      
+      .faq-list
+        .faq-category-section(data-category='general')
+          h2 General Questions
+          
+          .faq-item
+            .faq-question What is CivicaLex?
+            .faq-answer
+              p CivicaLex is a digital platform that provides comprehensive legal information and services to Indian citizens. We offer case management, petition filing, legal research, and awareness resources.
+          
+          .faq-item
+            .faq-question Is CivicaLex free to use?
+            .faq-answer
+              p Registration and basic features are free. Some premium services may have associated fees. Legal aid services are available for eligible users at no cost.
+          
+          .faq-item
+            .faq-question Do you provide legal advice?
+            .faq-answer
+              p We provide legal information and tools. For specific legal advice, we connect you with qualified legal professionals through our platform.
+        
+        .faq-category-section(data-category='account')
+          h2 Account & Registration
+          
+          .faq-item
+            .faq-question How do I create an account?
+            .faq-answer
+              p Click the "Register" button on the homepage and fill in your details. You'll need a valid email address and phone number.
+          
+          .faq-item
+            .faq-question I forgot my password. What should I do?
+            .faq-answer
+              p Click "Forgot Password" on the login page and follow the instructions to reset your password.
+          
+          .faq-item
+            .faq-question Can I change my email address?
+            .faq-answer
+              p For security reasons, email addresses cannot be changed directly. Please contact our support team for assistance.
+          
+          .faq-item
+            .faq-question How do I delete my account?
+            .faq-answer
+              p Go to your profile page and select "Delete Account". Note that this action is permanent and cannot be undone.
+        
+        .faq-category-section(data-category='legal')
+          h2 Legal Services
+          
+          .faq-item
+            .faq-question How do I file a petition?
+            .faq-answer
+              p Navigate to the Petitions section in your dashboard, fill out the petition form with required details, and submit it for review.
+          
+          .faq-item
+            .faq-question Can I track my court cases?
+            .faq-answer
+              p Yes, use the Case Management feature to add your cases and receive updates on hearing dates and case status.
+          
+          .faq-item
+            .faq-question How do I access legal aid?
+            .faq-answer
+              p Visit the Legal Aid section under Services to check your eligibility and apply for free legal assistance.
+          
+          .faq-item
+            .faq-question Are my documents secure?
+            .faq-answer
+              p Yes, all documents are encrypted and stored securely. Only you can access your uploaded documents.
+        
+        .faq-category-section(data-category='technical')
+          h2 Technical Support
+          
+          .faq-item
+            .faq-question What file formats can I upload?
+            .faq-answer
+              p We accept PDF, DOC, DOCX, TXT, JPG, PNG, and GIF files up to 10MB in size.
+          
+          .faq-item
+            .faq-question The website is not loading properly. What should I do?
+            .faq-answer
+              p Try clearing your browser cache and cookies. If the problem persists, try using a different browser or contact our support team.
+          
+          .faq-item
+            .faq-question Is there a mobile app?
+            .faq-answer
+              p Our website is mobile-responsive. A dedicated mobile app is currently in development.
+          
+          .faq-item
+            .faq-question How do I report a bug?
+            .faq-answer
+              p Please contact us through the Contact page with details about the issue you're experiencing.
+      
+      .faq-contact
+        h2 Still have questions?
+        p If you couldn't find the answer you're looking for, please don't hesitate to contact us.
+        a.btn(href='/contact') Contact Support
+      
+      script.
+        document.addEventListener('DOMContentLoaded', function() {
+          // FAQ search functionality
+          const searchInput = document.getElementById('faq-search');
+          searchInput.addEventListener('input', function() {
+            const query = this.value.toLowerCase();
+            document.querySelectorAll('.faq-item').forEach(item => {
+              const question = item.querySelector('.faq-question').textContent.toLowerCase();
+              const answer = item.querySelector('.faq-answer').textContent.toLowerCase();
+              if (question.includes(query) || answer.includes(query)) {
+                item.style.display = 'block';
+              } else {
+                item.style.display = 'none';
+              }
+            });
+          });
+          
+          // FAQ category filter
+          document.querySelectorAll('.faq-category-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+              document.querySelectorAll('.faq-category-btn').forEach(b => b.classList.remove('active'));
+              this.classList.add('active');
+              
+              const category = this.dataset.category;
+              document.querySelectorAll('.faq-category-section').forEach(section => {
+                if (category === 'all' || section.dataset.category === category) {
+                  section.style.display = 'block';
+                } else {
+                  section.style.display = 'none';
+                }
+              });
+            });
+          });
+          
+          // FAQ accordion functionality
+          document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', function() {
+              const answer = this.nextElementSibling;
+              const isOpen = answer.style.display === 'block';
+              
+              // Close all answers
+              document.querySelectorAll('.faq-answer').forEach(a => a.style.display = 'none');
+              
+              // Toggle current answer
+              answer.style.display = isOpen ? 'none' : 'block';
+            });
+          });
+        });

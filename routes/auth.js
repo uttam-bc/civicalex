@@ -83,7 +83,7 @@ router.post('/register', [
   body('name').trim().isLength({ min: 2 }),
   body('email').isEmail().normalizeEmail(),
   body('password').isLength({ min: 6 }),
-  body('phone').optional().matches(/^(\+?91)?[6-9]\d{9}$/).withMessage('Invalid Indian phone number')
+  body('phone').optional({ checkFalsy: true }) // Accept any format or empty
 ], async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {

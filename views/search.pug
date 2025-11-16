@@ -1,0 +1,76 @@
+extends layouts/main
+
+block content
+  .search-container
+    .container
+      h1 Search Results
+      
+      .search-form
+        form(method='GET', action='/search')
+          .search-input-group
+            input(
+              type='text',
+              name='q',
+              value=query || '',
+              placeholder='Search for laws, cases, or information...',
+              required
+            )
+            button(type='submit') Search
+      
+      if query
+        .search-info
+          p Found #{results.total} results for "#{query}"
+        
+        .search-filters
+          h3 Filter by:
+          .filter-options
+            label
+              input(type='checkbox', name='type', value='acts', checked=filters.includes('acts'))
+              |  Acts & Laws
+            label
+              input(type='checkbox', name='type', value='cases', checked=filters.includes('cases'))
+              |  Cases
+            label
+              input(type='checkbox', name='type', value='petitions', checked=filters.includes('petitions'))
+              |  Petitions
+            label
+              input(type='checkbox', name='type', value='articles', checked=filters.includes('articles'))
+              |  Articles & Resources
+        
+        .search-results
+          if results.total > 0
+            each result in results.items
+              .search-result-item
+                h3
+                  a(href=result.url)= result.title
+                p.result-type= result.type
+                p.result-snippet= result.snippet
+                p.result-meta
+                  if result.date
+                    span.result-date= result.date.toLocaleDateString()
+                  if result.relevance
+                    span.result-relevance Relevance: #{result.relevance}%
+          else
+            .no-results
+              h3 No results found
+              p Try different keywords or browse our categories:
+              .browse-links
+                a.btn(href='/law') Browse Laws
+                a.btn(href='/act/central') Browse Acts
+                a.btn(href='/services') Explore Services
+      else
+        .search-suggestions
+          h2 What would you like to find?
+          .suggestions-grid
+            a.suggestion-card(href='/law')
+              h3 Laws & Legal Areas
+              p Browse different areas of Indian law
+            a.suggestion-card(href='/act/central')
+              h3 Central Acts
+              p Search central government legislation
+            a.suggestion-card(href='/act/state')
+              h3 State Acts
+              p Find state-specific laws
+            a.suggestion-card(href='/services')
+              h3 Legal Services
+              p Explore available legal services
