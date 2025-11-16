@@ -1,5 +1,5 @@
 const express = require('express');
-const Case = require('../models/cases');
+const Case = require('../models/case');
 const Petition = require('../models/petition');
 const actsData = require('../data/acts.json');
 const router = express.Router();

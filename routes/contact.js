@@ -14,7 +14,7 @@ router.get('/', (req, res) => {
 router.post('/', [
   body('name').trim().isLength({ min: 2 }).withMessage('Name must be at least 2 characters'),
   body('email').isEmail().normalizeEmail().withMessage('Valid email required'),
-  body('phone').optional().matches(/^(\+?91)?[6-9]\d{9}$/).withMessage('Invalid phone number'),
+  body('phone').optional({ checkFalsy: true }),
   body('subject').notEmpty().withMessage('Subject is required'),
   body('message').trim().isLength({ min: 10 }).withMessage('Message must be at least 10 characters')
 ], async (req, res) => {

@@ -25,7 +25,7 @@ router.get('/', authenticateSession, async (req, res) => {
 // POST update profile
 router.post('/update', authenticateSession, [
   body('name').trim().isLength({ min: 2 }),
-  body('phone').optional().matches(/^(\+?91)?[6-9]\d{9}$/),
+  body('phone').optional({ checkFalsy: true }),
   body('address').optional().trim()
 ], async (req, res) => {
   const errors = validationResult(req);

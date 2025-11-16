@@ -1,6 +1,12 @@
 const express = require('express');
 const router = express.Router();
-
+// Add at the beginning
+router.get('/', (req, res) => {
+  res.render('law/index', { 
+    title: 'Areas of Law - CivicaLex',
+    user: req.session.userId ? { _id: req.session.userId } : null
+  });
+});
 // Constitutional law page
 router.get('/constitutional', (req, res) => {
   res.render('law/constitutional', { 

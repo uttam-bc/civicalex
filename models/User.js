@@ -31,9 +31,10 @@ const userSchema = new mongoose.Schema({
     trim: true,
     validate: {
       validator: function(v) {
-        if (!v) return true; // optional field
-        // Indian phone number format: 10 digits, optionally with +91 prefix
-        return /^(\+?91)?[6-9]\d{9}$/.test(v);
+       // Allow null, undefined, or empty string
+      if (!v || v === '') return true;
+      // Allow any string with length
+      return typeof v === 'string';
       },
       message: 'Please provide a valid 10-digit Indian phone number'
     }

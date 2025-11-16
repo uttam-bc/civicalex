@@ -1,6 +1,6 @@
 const express = require('express');
 const { authenticateSession } = require('../middleware/auth');
-const Case = require('../models/cases');
+const Case = require('../models/case');
 const Document = require('../models/document');
 const router = express.Router();
 
