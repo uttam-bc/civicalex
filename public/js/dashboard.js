@@ -10,10 +10,14 @@ document.addEventListener('DOMContentLoaded', function() {
   initializeNotifications();
 });
 
+const handlers = new WeakMap();
+
 function initializeDashboard() {
   // Update stats periodically
   updateQuickStats();
-  
+
+  if (handlers.has(createPetitionBtn)) return;
+
   // Set up event listeners for dashboard actions
   const createPetitionBtn = document.querySelector('a[href="/dashboard/add-petition"]');
   const addCaseBtn = document.querySelector('a[href="/dashboard/add-case"]');
@@ -119,8 +123,12 @@ function submitCaseForm() {
   }
 
   fetch('/dashboard/add-case', {
-    method: 'POST',
-    body: formData
+   method: 'POST',
+  headers: {
+    'X-CSRF-Token': document.querySelector('input[name="_csrf"]').value
+  },
+  body: formData
+
   })
   .then(response => {
     if (response.ok) {
@@ -213,6 +221,10 @@ function initializeDocumentManagement() {
   }
 }
 
+if (!formData.get('document')) {
+  alert('Please select a document to upload'); // ❌ Can be bypassed
+  return;
+}
 function submitDocumentForm() {
   const form = document.getElementById('upload-document-form');
   const formData = new FormData(form);

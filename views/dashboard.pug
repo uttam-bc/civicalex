@@ -216,12 +216,18 @@ block content
                   li
                     strong #{hearing.caseTitle}
                     br
-                    | Date: #{hearing.date.toLocaleDateString()}
+                    if hearing.date
+                      | Date: #{hearing.date.toLocaleDateString()}
+                    else
+                      | Date: Not scheduled
                     br
                     | Court: #{hearing.court}
               else
                 li No upcoming hearings scheduled
-            button#add-reminder-btn Add Reminder
+            button#add-reminder-btn(
+              type="button",
+              aria-label="Add court hearing reminder"
+            ) Add Reminder
             p You can sync with your external calendar for automatic reminders
 
       .section

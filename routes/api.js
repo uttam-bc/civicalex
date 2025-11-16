@@ -7,7 +7,12 @@ const router = express.Router();
 // Get user's cases
 router.get('/cases', authenticateSession, async (req, res) => {
   try {
-    const cases = await Case.find({ userId: req.session.userId }).sort({ createdAt: -1 });
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 20;
+    const cases = await Case.find({ userId: req.session.userId })
+      .sort({ createdAt: -1 })
+      .limit(limit)
+      .skip((page - 1) * limit);
     res.json(cases);
   } catch (error) {
     console.error('API error:', error);

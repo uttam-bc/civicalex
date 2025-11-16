@@ -114,6 +114,17 @@ documentSchema.pre('validate', function(next) {
   }
   next();
 });
+documentSchema.add({
+  isDeleted: { type: Boolean, default: false },
+  deletedAt: Date,
+  deletedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
+});
+
+// Change queries to exclude deleted
+documentSchema.pre(/^find/, function(next) {
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
 
 // ✅ Indexes for performance
 documentSchema.index({ userId: 1 });

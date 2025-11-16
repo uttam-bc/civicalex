@@ -104,7 +104,8 @@ function processHomeChatMessage() {
 function addMessageToChat(chatContainer, message, sender) {
   const messageElement = document.createElement('div');
   messageElement.className = `message ${sender}-message`;
-  messageElement.innerHTML = `<p>${message}</p>`;
+  messageElement.textContent = message; 
+  messageElement.innerHTML = DOMPurify.sanitize(`<p>${message}</p>`);
   chatContainer.appendChild(messageElement);
   chatContainer.scrollTop = chatContainer.scrollHeight;
 }

@@ -9,7 +9,7 @@ router.get('/', (req, res) => {
   const features = [
     { title: 'Case Management', desc: 'Track and manage your legal cases efficiently' },
     { title: 'Petition Module', desc: 'Draft and submit legal petitions with ease' },
-     { title: 'Petition Module', desc: 'Draft and submit legal petitions with ease' },
+     
     { title: 'Store Documents', desc: 'Securely store and organize legal documents' },
     { title: 'Court Calendar', desc: 'Schedule and track court hearings' },
     { title: 'AI Legal Draft Assistant', desc: 'Generate legal documents with AI assistance' },
