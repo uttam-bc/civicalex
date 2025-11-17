@@ -27,18 +27,17 @@ const userSchema = new mongoose.Schema({
     minlength: [6, 'Password must be at least 6 characters']
   },
   phone: {
-    type: String,
-    trim: true,
-    validate: {
-      validator: function(v) {
-        // Allow empty or null
-        if (!v || v === '') return true;
-        // Must be a string with 10-15 characters (digits, spaces, +, -, ())
-        return /^[\d\s\+\-\(\)]{10,15}$/.test(v);
-      },
-      message: 'Please provide a valid phone number (10-15 digits)'
-    }
-  },
+  type: String,
+  trim: true,
+  validate: {
+    validator: function(v) {
+      if (!v || v === '') return true;
+      // Allow international formats: +XX XXXXXXXXXX or XXXXXXXXXX
+      return /^(\+\d{1,3}[- ]?)?\d{10,15}$/.test(v.replace(/\s/g, ''));
+    },
+    message: 'Please provide a valid phone number'
+  }
+},
   address: {
     type: String,
     trim: true,
