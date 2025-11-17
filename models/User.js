@@ -27,18 +27,17 @@ const userSchema = new mongoose.Schema({
     minlength: [6, 'Password must be at least 6 characters']
   },
   phone: {
-    type: String,
-    trim: true,
-    validate: {
-      validator: function(v) {
-       // Allow null, undefined, or empty string
+  type: String,
+  trim: true,
+  validate: {
+    validator: function(v) {
       if (!v || v === '') return true;
-      // Allow any string with length
-      return typeof v === 'string';
-      },
-      message: 'Please provide a valid 10-digit Indian phone number'
-    }
-  },
+      // Allow international formats: +XX XXXXXXXXXX or XXXXXXXXXX
+      return /^(\+\d{1,3}[- ]?)?\d{10,15}$/.test(v.replace(/\s/g, ''));
+    },
+    message: 'Please provide a valid phone number'
+  }
+},
   address: {
     type: String,
     trim: true,
@@ -67,7 +66,6 @@ const userSchema = new mongoose.Schema({
     validate: {
       validator: function(v) {
         if (!v) return true;
-        // Only allow relative paths to prevent external URLs
         return /^\/images\/.*\.(jpg|jpeg|png|gif)$/i.test(v);
       },
       message: 'Invalid profile picture path'
@@ -78,12 +76,11 @@ const userSchema = new mongoose.Schema({
     default: Date.now
   }
 }, {
-  timestamps: true // adds updatedAt
+  timestamps: true
 });
 
 // ✅ Hash password before saving
 userSchema.pre('save', async function(next) {
-  // Only hash if password is modified
   if (!this.isModified('password')) return next();
   
   try {

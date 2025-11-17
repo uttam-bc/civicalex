@@ -4,6 +4,7 @@ block content
   .auth-container
     .auth-form
       h2 Register with CivicaLex
+      
       if error
         .error-message(role='alert', aria-live='polite')= error
       if errors && errors.length
@@ -49,8 +50,9 @@ block content
           input#phone(
             type='tel',
             name='phone',
-            placeholder='Enter your phone number'
+            placeholder='Enter your phone number (eg +911234567890)'
           )
+
         .form-group
           label(for='address') Address (Optional)
           textarea#address(
@@ -61,3 +63,8 @@ block content
         button(type='submit') Register
       p Already have an account? 
         a(href='/login') Login here
+      if errors && errors.length
+        .error-message(role='alert', aria-live='polite')
+          ul
+            each error in errors
+              li= error.msg || error.message || JSON.stringify(error)

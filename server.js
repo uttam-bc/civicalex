@@ -6,11 +6,7 @@ const dotenv = require('dotenv');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const csrf = require('csurf');
-const validator = require('validator');
 
-
-
-// Load environment variables
 dotenv.config();
 
 // Validate required environment variables
@@ -22,9 +18,7 @@ for (const envVar of requiredEnv) {
   }
 }
 
-// Initialize Express app
 const app = express();
-
 
 // 🔒 Security middleware
 app.use(helmet({
@@ -59,6 +53,7 @@ const generalLimiter = rateLimit({
 app.use('/login', authLimiter);
 app.use('/register', authLimiter);
 app.use(generalLimiter);
+
 const uploadLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 10,
@@ -72,34 +67,52 @@ app.use('/api', rateLimit({ windowMs: 15 * 60 * 1000, max: 50 }));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: false, limit: '10mb' }));
 
-// 🧼 Input sanitization (using validator)
+// ✅ FIXED: Sanitization that doesn't break validation
+// ✅ Safer request-body sanitization (do NOT strip dots from emails!)
 app.use((req, res, next) => {
-  if (req.body) {
-    Object.keys(req.body).forEach(key => {
-      if (typeof req.body[key] === 'string' && req.body[key].length > 0) {
-        // Don't sanitize phone numbers - keep them as is
-        if (key === 'phone') {
-          req.body[key] = req.body[key].trim();
-          return;
-        }
-        
-        // Remove potential NoSQL injection characters for other fields
-        req.body[key] = req.body[key].trim()
-          .replace(/\$/g, '')
-          .replace(/\./g, '');
-        
-        // Escape HTML entities for other fields
-        try {
-          req.body[key] = validator.escape(req.body[key]);
-        } catch (error) {
-          console.log(`Error escaping field ${key}:`, error);
-          req.body[key] = req.body[key].trim();
-        }
-      }
-    });
-  }
+  if (!req.body || typeof req.body !== 'object') return next();
+
+  // Defensive: remove dangerous keys (top-level only)
+  Object.keys(req.body).forEach(key => {
+    if (key.startsWith('$')) {
+      delete req.body[key];
+      return;
+    }
+  });
+
+  // Clean each field value safely
+  Object.keys(req.body).forEach(key => {
+    let val = req.body[key];
+
+    // If it's not a string, leave it (numbers, booleans, arrays, objects)
+    if (typeof val !== 'string') return;
+
+    // Trim surrounding whitespace
+    val = val.trim();
+
+    // Remove leading $ to avoid NoSQL injection payloads (e.g. "$ne")
+    if (val.startsWith('$')) val = val.replace(/^\$+/, '');
+
+    // For email, preserve dots and plus addressing — only normalize spaces
+    if (key === 'email') {
+      // collapse internal whitespace, leave dots and plus sign intact
+      req.body.email = val.replace(/\s+/g, '');
+      return;
+    }
+
+    // For phone: remove spaces, dashes, parentheses but keep leading +
+    if (key === 'phone') {
+      req.body.phone = val.replace(/[()\s\-]/g, '');
+      return;
+    }
+
+    // For any other string field: just remove CR/LF and null-bytes and strip $ at start
+    req.body[key] = val.replace(/[\0\r\n]+/g, '').replace(/\$/g, '');
+  });
+
   next();
 });
+
 
 // 🔐 Session configuration - MUST COME BEFORE CSRF
 app.use(session({
@@ -138,7 +151,7 @@ app.use('/uploads', (req, res, next) => {
 });
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URI,{
+mongoose.connect(process.env.MONGODB_URI, {
   maxPoolSize: 10,
   serverSelectionTimeoutMS: 5000,
   socketTimeoutMS: 45000,
@@ -157,14 +170,12 @@ app.use('/act', require('./routes/act'));
 app.use('/services', require('./routes/services'));
 app.use('/documents', require('./routes/document'));
 app.use('/api', require('./routes/api'));
-
 app.use('/about', require('./routes/about'));
 app.use('/contact', require('./routes/contact'));
 app.use('/profile', require('./routes/profile'));
 app.use('/cases', require('./routes/cases'));
 app.use('/petitions', require('./routes/petition'));
 app.use('/search', require('./routes/search'));
-
 
 app.get('/privacy', (req, res) => {
   res.render('privacy', { 
@@ -179,7 +190,7 @@ app.get('/terms', (req, res) => {
     user: req.session.userId ? { _id: req.session.userId } : null
   });
 });
-// FAQ page
+
 app.get('/faq', (req, res) => {
   res.render('faq', {
     title: 'FAQ - CivicaLex',
@@ -191,7 +202,6 @@ app.get('/faq', (req, res) => {
 app.use((err, req, res, next) => {
   console.error('❌ Server Error:', err.stack);
   
-  // Handle CSRF errors
   if (err.code === 'EBADCSRFTOKEN') {
     return res.status(403).render('error', { 
       title: 'Security Error', 
