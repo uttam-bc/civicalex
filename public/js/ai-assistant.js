@@ -22,7 +22,7 @@ async function sendMsg() {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "CSRF-Token": csrfToken
+      "X-CSRF-Token": csrfToken
     },
     body: JSON.stringify({ message: text })
   });
