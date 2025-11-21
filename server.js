@@ -6,6 +6,8 @@ const dotenv = require('dotenv');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const csrf = require('csurf');
+const aiRoutes = require("./routes/ai");
+
 
 dotenv.config();
 
@@ -129,11 +131,17 @@ app.use(session({
 
 // 🛡️ CSRF protection - MUST COME AFTER SESSION
 const csrfProtection = csrf();
-app.use(csrfProtection);
+
+
+
+// Exempt /api/ai/* from CSRF
 app.use((req, res, next) => {
-  res.locals.csrfToken = req.csrfToken();
-  next();
+  if (req.path.startsWith("/api/ai")) {
+    return next(); // skip CSRF check
+  }
+  csrfProtection(req, res, next);
 });
+
 
 // Set view engine
 app.set('view engine', 'pug');
@@ -176,6 +184,9 @@ app.use('/profile', require('./routes/profile'));
 app.use('/cases', require('./routes/cases'));
 app.use('/petitions', require('./routes/petition'));
 app.use('/search', require('./routes/search'));
+app.use("/api/ai", aiRoutes);
+
+
 
 app.get('/privacy', (req, res) => {
   res.render('privacy', { 
