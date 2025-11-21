@@ -235,11 +235,11 @@ block content
         .section-content
           .ai-assistant-container
             .ai-chat-messages#ai-chat-messages
-              .message.bot-message
-                p Welcome to the AI Legal Draft Assistant! How can I help you draft legal documents today?
+            input(type="hidden", id="csrf-token", value=csrfToken)
             .ai-chat-input-container
-              input(type='text', id='ai-chat-input', placeholder='Ask about legal document drafting, templates, or legal procedures...')
+              input#ai-chat-input(type='text' placeholder='Ask something...')
               button#ai-send-btn Send
+
 
       .section
         h3 Case Dashboard
