@@ -6,7 +6,7 @@
   "scripts": {
     "start": "concurrently \"npm:node-server\" \"npm:python-server\"",
     "node-server": "node server.js",
-    "python-server": "python python/server.py",
+    "python-server": "python civicalexai.py",
     "dev": "concurrently \"npm:node-dev\" \"npm:python-server\"",
     "node-dev": "nodemon server.js"
   },

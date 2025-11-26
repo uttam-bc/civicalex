@@ -3,17 +3,17 @@
 import os
 import json
 from fastapi import FastAPI, WebSocket
+import traceback
 
 # -----------------------------
-# 1. SETUP GOOGLE API KEY
+# 1. GOOGLE API KEY SETUP
 # -----------------------------
 try:
-    # ❌ Your original key was missing quotes and caused syntax error.
     GOOGLE_API_KEY = "AIzaSyCsc791_A3zX4oPGGpjL5q3xksFxZAjQbo"
     os.environ["GOOGLE_API_KEY"] = GOOGLE_API_KEY
-    print("✅ Gemini API key setup complete.")
+    print("✅ Google Gemini API key loaded.")
 except Exception as e:
-    print(f"❌ Authentication Error: {e}")
+    print(f"❌ API Key Error: {e}")
 
 # -----------------------------
 # 2. IMPORT ADK COMPONENTS
@@ -25,35 +25,42 @@ try:
     from google.adk.tools import AgentTool, google_search
     from google.genai import types
 
-    print("✅ ADK components imported successfully.")
+    print("✅ ADK modules imported.")
 except Exception as e:
-    print(f"❌ ADK Import Error: {e}")
+    print("❌ Failed importing Google ADK:", e)
+    traceback.print_exc()
 
 # -----------------------------
-# 3. FASTAPI APP + ROUTE
+# 3. FASTAPI APP
 # -----------------------------
 app = FastAPI()
 
+# -----------------------------
+# 4. GLOBAL RETRY CONFIG
+# -----------------------------
+retry_config = types.HttpRetryOptions(
+    attempts=5,
+    exp_base=7,
+    initial_delay=1,
+    http_status_codes=[429, 500, 503, 504],
+)
+
+# -----------------------------
+# 5. WEBSOCKET ENDPOINT
+# -----------------------------
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
-    print("Client connected")
-
-    # Retry config
-    retry_config = types.HttpRetryOptions(
-        attempts=5,
-        exp_base=7,
-        initial_delay=1,
-        http_status_codes=[429, 500, 503, 504],
-    )
+    print("🔗 Client connected")
 
     try:
         while True:
-            # 4. RECEIVE MESSAGE
-            data = await websocket.receive_text()
-            print("From client:", data)
 
-            # Parse JSON
+            # RECEIVE MESSAGE
+            data = await websocket.receive_text()
+            print("📩 Received:", data)
+
+            # Parse JSON safely
             try:
                 msg = json.loads(data)
                 user_msg = msg.get("message", "")
@@ -61,7 +68,7 @@ async def websocket_endpoint(websocket: WebSocket):
                 user_msg = data
 
             # -----------------------------
-            # 5. DEFINE AGENTS
+            # 6. AGENTS
             # -----------------------------
             research_agent = Agent(
                 name="ResearchAgent",
@@ -69,7 +76,7 @@ async def websocket_endpoint(websocket: WebSocket):
                     model="gemini-2.5-flash-lite",
                     retry_options=retry_config
                 ),
-                instruction=user_msg,
+                instruction="Search online and gather relevant, factual information.",
                 tools=[google_search],
                 output_key="research_findings",
             )
@@ -80,28 +87,25 @@ async def websocket_endpoint(websocket: WebSocket):
                     model="gemini-2.5-flash-lite",
                     retry_options=retry_config
                 ),
-                instruction="Provide a clean and short answer based on the findings.",
+                instruction="Provide a clear, short, and concise answer.",
                 tools=[AgentTool(research_agent)],
             )
 
-            # -----------------------------
-            # 6. RUN THE AGENT WORKFLOW
-            # -----------------------------
             runner = InMemoryRunner(agent=root_agent)
 
-            response = await runner.run_debug(
-                f"Your answer for: {user_msg}"
+            # RUN WORKFLOW
+            ai_response = await runner.run(
+                f"Answer the user's query: {user_msg}"
             )
 
-            # -----------------------------
-            # 7. SEND RESPONSE BACK
-            # -----------------------------
-            reply_data = {
-                "reply": str(response),
-                "length": len(str(response)),
+            # SEND BACK RESPONSE
+            reply = {
+                "reply": str(ai_response),
+                "length": len(str(ai_response)),
             }
 
-            await websocket.send_text(json.dumps(reply_data))
+            await websocket.send_text(json.dumps(reply))
 
     except Exception as e:
-        print("Client disconnected:", e)
+        print("❌ WebSocket disconnected:", e)
+        traceback.print_exc()

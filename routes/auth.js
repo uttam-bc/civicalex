@@ -24,7 +24,10 @@ router.get('/', (req, res) => {
 
 // Login page
 router.get('/login', (req, res) => {
-  res.render('login', { title: 'Login - CivicaLex' });
+  res.render('login', { 
+    title: 'Login - CivicaLex',
+    csrfToken: req.csrfToken() 
+   });
 });
 
 // Register page
