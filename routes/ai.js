@@ -1,39 +1,72 @@
 const express = require("express");
-const axios = require("axios");
+const WebSocket = require("ws");
 
 const router = express.Router();
 
+// -------------------------------
+// 1. GLOBAL WS VARIABLE
+// -------------------------------
+let ws;
+
+// -------------------------------
+// 2. CONNECT TO PYTHON WS SERVER
+// -------------------------------
+function connectWS() {
+  console.log("Connecting to Python WebSocket...");
+
+  ws = new WebSocket("ws://127.0.0.1:8000/ws");
+
+  ws.on("open", () => {
+    console.log("✅ Connected to Python WebSocket");
+  });
+
+  ws.on("close", () => {
+    console.log("❌ Python WS closed. Reconnecting...");
+    setTimeout(connectWS, 2000);
+  });
+
+  ws.on("error", (err) => {
+    console.error("WS Error:", err.message);
+  });
+}
+
+connectWS();
+
+// -------------------------------
+// 3. FUNCTION: SEND MESSAGE TO PYTHON AI
+// -------------------------------
+function sendToPython(message) {
+  return new Promise((resolve, reject) => {
+
+    if (!ws || ws.readyState !== WebSocket.OPEN) {
+      return reject("Python WebSocket not connected.");
+    }
+
+    // Receive single message
+    const handleMessage = (data) => {
+      ws.off("message", handleMessage);
+      resolve(data.toString());
+    };
+
+    ws.on("message", handleMessage);
+
+    ws.send(JSON.stringify({ message }));
+  });
+}
+
+// -------------------------------
+// 4. EXPRESS ROUTE
+// -------------------------------
 router.post("/chat", async (req, res) => {
   const { message } = req.body;
 
   try {
-    const apiKey = process.env.OPENAI_API_KEY;
+    const response = await sendToPython(message);
+    res.json({ reply: response });
 
-    const response = await axios.post(
-      "https://api.openai.com/v1/chat/completions",
-      {
-        model: "gpt-4o-mini",
-        messages: [
-          {
-            role: "user",
-            content: message
-          }
-        ]
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${apiKey}`
-        }
-      }
-    );
-
-    const reply = response.data.choices[0].message.content;
-
-    res.json({ reply });
   } catch (error) {
-    console.error("OpenAI Error:", error.response?.data || error.message);
-    res.json({ reply: "OpenAI error occurred." });
+    console.error("Python WS Error:", error);
+    res.json({ reply: "Python WebSocket error." });
   }
 });
 
