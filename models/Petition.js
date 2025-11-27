@@ -69,7 +69,7 @@ const petitionSchema = new mongoose.Schema({
   timestamps: true
 });
 
-// ✅ Indexes for performance
+// Indexes for performance
 petitionSchema.index({ userId: 1 });
 petitionSchema.index({ status: 1 });
 petitionSchema.index({ type: 1 });

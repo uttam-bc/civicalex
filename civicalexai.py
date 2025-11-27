@@ -1,84 +1,84 @@
 # civicalex ai bot
-#comment
-#import google api 
-import os
 
+import os
+import json
+from fastapi import FastAPI, WebSocket
+import traceback
 
 try:
-    GOOGLE_API_KEY = AIzaSyCsc791_A3zX4oPGGpjL5q3xksFxZAjQbo
+    GOOGLE_API_KEY = "AIzaSyCsc791_A3zX4oPGGpjL5q3xksFxZAjQbo"
     os.environ["GOOGLE_API_KEY"] = GOOGLE_API_KEY
-    print("✅ Gemini API key setup complete.")
+    print("✅ Google Gemini API key loaded.")
 except Exception as e:
-    print(
-        f"🔑 Authentication Error: Please make sure you have added 'GOOGLE_API_KEY' to your Kaggle secrets. Details: {e}"
-    )
-    
-#import adk components
-from google.adk.agents import Agent, SequentialAgent, ParallelAgent, LoopAgent
-from google.adk.models.google_llm import Gemini
-from google.adk.runners import InMemoryRunner
-from google.adk.tools import AgentTool, FunctionTool, google_search
-from google.genai import types
+    print(f"❌ API Key Error: {e}")
 
-print("✅ ADK components imported successfully.")
+try:
+    from google.adk.agents import Agent
+    from google.adk.models.google_llm import Gemini
+    from google.adk.runners import InMemoryRunner
+    from google.adk.tools import AgentTool, google_search
+    from google.genai import types
 
-#configure retry options
-retry_config=types.HttpRetryOptions(
-    attempts=5,  # Maximum retry attempts
-    exp_base=7,  # Delay multiplier
+    print("✅ ADK modules imported.")
+except Exception as e:
+    print("❌ Failed importing Google ADK:", e)
+    traceback.print_exc()
+
+app = FastAPI()
+
+retry_config = types.HttpRetryOptions(
+    attempts=5,
+    exp_base=7,
     initial_delay=1,
-    http_status_codes=[429, 500, 503, 504], # Retry on these HTTP errors
+    http_status_codes=[429, 500, 503, 504],
 )
 
-#multi agent system
+@app.websocket("/ws")
+async def websocket_endpoint(websocket: WebSocket):
+    await websocket.accept()
+    print(" Client connected")
 
-#agent1
-research_agent = Agent(
-    name="ResearchAgent",
-    model=Gemini(
-        model="gemini-2.5-flash-lite",
-        retry_options=retry_config
-    ), #provide instruction
-    instruction="""You are a specialized research agent. Your only job is to use the 
-    google_search tool to find 2-3 pieces of relevant information on the given topic and present the findings with citations.""",
-    tools=[google_search],
-    output_key="research_findings",  # The result of this agent will be stored in the session state with this key.
-)
+    try:
+        while True:
 
-#agent2
-summarizer_agent = Agent(
-    name="SummarizerAgent",
-    model=Gemini(
-        model="gemini-2.5-flash-lite",
-        retry_options=retry_config
-    ),
-    # The instruction is modified to request a bulleted list for a clear output format.
-    instruction="""Read the provided research findings: {research_findings}
-Create a concise summary as a bulleted list with 3-5 key points.""",
-    output_key="final_summary",
-)
+            # RECEIVE MESSAGE
+            data = await websocket.receive_text()
+            print(" Received:", data)
 
+            # Parse JSON safely
+            try:
+                msg = json.loads(data)
+                user_msg = msg.get("message", "")
+            except:
+                user_msg = data
 
-#root coordinator / agent
-root_agent = Agent(
-    name="ResearchCoordinator",
-    model=Gemini(
-        model="gemini-2.5-flash-lite",
-        retry_options=retry_config
-    ),
-    # This instruction tells the root agent HOW to use its tools (which are the other agents).
-    instruction="""You are a research coordinator. Your goal is to answer the user's query by orchestrating a workflow.
-1. First, you MUST call the `ResearchAgent` tool to find relevant information on the topic provided by the user.
-2. Next, after receiving the research findings, you MUST call the `SummarizerAgent` tool to create a concise summary.
-3. Finally, present the final summary clearly to the user as your response.""",
-    # We wrap the sub-agents in `AgentTool` to make them callable tools for the root agent.
-    tools=[AgentTool(research_agent), AgentTool(summarizer_agent)],
-)
+        
+            
 
-print("✅ root_agent created.")
+            root_agent = Agent(
+                name="ResearchCoordinator",
+                model=Gemini(
+                    model="gemini-2.5-flash-lite",
+                    retry_options=retry_config
+                ),
+                instruction=f"Provide a clear, short, and concise answer to {user_msg}.",
+                tools=[google_search],
+            )
 
-#run the script
-runner = InMemoryRunner(agent=root_agent)
-response = await runner.run_debug(
-    "What are the latest advancements in quantum computing and what do they mean for AI?"
-)
+            runner = InMemoryRunner(agent=root_agent )
+           
+            # RUN WORKFLOW
+            ai_response = await runner.run_debug(f"answer for {user_msg} ")
+            
+
+            # SEND BACK RESPONSE
+            reply = {
+                "reply": str(ai_response),
+                "length": len(str(ai_response)),
+            }
+
+            await websocket.send_text(json.dumps(reply))
+
+    except Exception as e:
+        print(" WebSocket disconnected:", e)
+        traceback.print_exc()

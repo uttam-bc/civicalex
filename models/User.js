@@ -79,7 +79,7 @@ const userSchema = new mongoose.Schema({
   timestamps: true
 });
 
-// ✅ Hash password before saving
+// Hash password before saving
 userSchema.pre('save', async function(next) {
   if (!this.isModified('password')) return next();
   
@@ -92,12 +92,12 @@ userSchema.pre('save', async function(next) {
   }
 });
 
-// ✅ Compare password method
+// Compare password method
 userSchema.methods.comparePassword = async function(candidatePassword) {
   return await bcrypt.compare(candidatePassword, this.password);
 };
 
-// ✅ Indexes for performance
+//Indexes for performance
 userSchema.index({ email: 1 });
 userSchema.index({ role: 1 });
 userSchema.index({ createdAt: 1 });
