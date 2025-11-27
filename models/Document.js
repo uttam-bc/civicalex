@@ -23,7 +23,7 @@ const documentSchema = new mongoose.Schema({
   filePath: {
     type: String,
     required: [true, 'File path is required'],
-    // ✅ Internal-only path, never exposed to client
+    //Internal-only path, never exposed to client
     validate: {
       validator: function(v) {
         // Ensure path doesn't contain directory traversal
@@ -126,7 +126,7 @@ documentSchema.pre(/^find/, function(next) {
   next();
 });
 
-// ✅ Indexes for performance
+// Indexes for performance
 documentSchema.index({ userId: 1 });
 documentSchema.index({ caseId: 1 });
 documentSchema.index({ petitionId: 1 });

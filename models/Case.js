@@ -80,7 +80,7 @@ const caseSchema = new mongoose.Schema({
   timestamps: true
 });
 
-// ✅ Indexes for performance
+//Indexes for performance
 caseSchema.index({ userId: 1 });
 caseSchema.index({ nextHearing: 1 });
 caseSchema.index({ status: 1 });
