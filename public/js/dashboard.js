@@ -236,6 +236,9 @@ function submitDocumentForm() {
 
   fetch('/dashboard/upload-document', {
     method: 'POST',
+    headers: {
+    'X-CSRF-Token': document.querySelector('input[name="_csrf"]').value
+  },
     body: formData
   })
   .then(response => {
@@ -305,7 +308,7 @@ function trackPetitionProgress(petitionId) {
 
 // Function to view document
 function viewDocument(docId) {
-  // ✅ Opens in new tab via secure route
+  // Opens in new tab via secure route
   window.open(`/documents/${docId}/view`, '_blank');
 }
 

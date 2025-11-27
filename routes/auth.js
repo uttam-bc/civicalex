@@ -79,7 +79,7 @@ router.post('/login', [
       });
     }
 
-    // ✅ SESSION-BASED AUTH
+    // SESSION-BASED AUTH
     req.session.userId = user._id;
     req.session.lastLogin = new Date();
     
@@ -103,7 +103,7 @@ router.post('/login', [
   }
 });
 
-// Register POST - ✅ FIXED VALIDATION
+// Register POST 
 router.post('/register', [
   body('name')
     .trim()
@@ -124,7 +124,7 @@ router.post('/register', [
     .optional({ checkFalsy: true })
     .customSanitizer(value => {
       if (!value) return value;
-      // convert to string and normalize spaces/dashes
+      
       return String(value).replace(/[\s\-()]/g, '');
     })
     .matches(/^[+]?[\d]{10,15}$/)
@@ -171,7 +171,7 @@ router.post('/register', [
     await user.save();
     console.log('User registered successfully:', email);
 
-    // ✅ SESSION-BASED AUTH
+    // SESSION-BASED AUTH
     req.session.userId = user._id;
     req.session.lastLogin = new Date();
     

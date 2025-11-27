@@ -13,7 +13,7 @@ block content
             each error in errors
               li= error.msg
       form#register-form(method='POST', action='/register')
-        // ✅ CRITICAL: CSRF Token for form protection
+        //  CSRF Token for form protection
         input(type='hidden', name='_csrf', value=csrfToken)
         
         .form-group

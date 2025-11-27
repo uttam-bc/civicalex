@@ -3,14 +3,10 @@ const WebSocket = require("ws");
 
 const router = express.Router();
 
-// -------------------------------
-// 1. GLOBAL WS VARIABLE
-// -------------------------------
+
 let ws;
 
-// -------------------------------
-// 2. CONNECT TO PYTHON WS SERVER
-// -------------------------------
+
 function connectWS() {
   console.log("Connecting to Python WebSocket...");
 
@@ -32,9 +28,8 @@ function connectWS() {
 
 connectWS();
 
-// -------------------------------
-// 3. FUNCTION: SEND MESSAGE TO PYTHON AI
-// -------------------------------
+//  SEND MESSAGE TO PYTHON AI
+
 function sendToPython(message) {
   return new Promise((resolve, reject) => {
 
@@ -54,9 +49,6 @@ function sendToPython(message) {
   });
 }
 
-// -------------------------------
-// 4. EXPRESS ROUTE
-// -------------------------------
 router.post("/chat", async (req, res) => {
   const { message } = req.body;
 

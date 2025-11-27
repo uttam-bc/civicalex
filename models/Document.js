@@ -106,7 +106,7 @@ const documentSchema = new mongoose.Schema({
   timestamps: true
 });
 
-// ✅ Validation: Must belong to case OR petition (at least one)
+// Validation: Must belong to case OR petition (at least one)
 documentSchema.pre('validate', function(next) {
   if (!this.caseId && !this.petitionId) {
     this.invalidate('caseId', 'Document must be linked to a case or petition');

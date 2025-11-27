@@ -10,7 +10,7 @@ try:
     os.environ["GOOGLE_API_KEY"] = GOOGLE_API_KEY
     print("✅ Google Gemini API key loaded.")
 except Exception as e:
-    print(f"❌ API Key Error: {e}")
+    print(f" API Key Error: {e}")
 
 try:
     from google.adk.agents import Agent
@@ -21,7 +21,7 @@ try:
 
     print("✅ ADK modules imported.")
 except Exception as e:
-    print("❌ Failed importing Google ADK:", e)
+    print(" Failed importing Google ADK:", e)
     traceback.print_exc()
 
 app = FastAPI()

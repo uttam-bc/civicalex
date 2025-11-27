@@ -4,7 +4,7 @@ const Document = require('../models/document');
 const path = require('path');
 const router = express.Router();
 
-// ✅ Download document (protected route)
+//  Download document (protected route)
 router.get('/:id/download', authenticateSession, async (req, res) => {
   try {
     const doc = await Document.findById(req.params.id);
@@ -15,7 +15,7 @@ router.get('/:id/download', authenticateSession, async (req, res) => {
       });
     }
 
-    // ✅ Verify ownership
+    // Verify ownership
     if (doc.userId.toString() !== req.session.userId) {
       return res.status(403).render('error', { 
         title: 'Forbidden', 
@@ -23,10 +23,10 @@ router.get('/:id/download', authenticateSession, async (req, res) => {
       });
     }
 
-    // ✅ Construct full file path
+    //  Construct full file path
     const filePath = path.join(__dirname, '..', 'private_uploads', doc.filePath);
 
-    // ✅ Verify file exists
+    // Verify file exists
     if (!require('fs').existsSync(filePath)) {
       return res.status(404).render('error', { 
         title: 'Not Found', 
@@ -34,7 +34,7 @@ router.get('/:id/download', authenticateSession, async (req, res) => {
       });
     }
 
-    // ✅ Send file with original name for download
+    // Send file with original name for download
     res.download(filePath, doc.fileName, (err) => {
       if (err) {
         console.error('Download error:', err);
@@ -53,7 +53,7 @@ router.get('/:id/download', authenticateSession, async (req, res) => {
   }
 });
 
-// ✅ View document in browser (if supported)
+// View document in browser (if supported)
 router.get('/:id/view', authenticateSession, async (req, res) => {
   try {
     const doc = await Document.findById(req.params.id);
@@ -90,7 +90,7 @@ router.get('/:id/view', authenticateSession, async (req, res) => {
   }
 });
 
-// ✅ Delete document (POST to prevent CSRF)
+// Delete document (POST to prevent CSRF)
 router.post('/:id/delete', authenticateSession, async (req, res) => {
   try {
     const doc = await Document.findById(req.params.id);

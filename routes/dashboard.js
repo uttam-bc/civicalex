@@ -6,6 +6,8 @@ const Case = require('../models/case'); // Fixed lowercase filename
 const Document = require('../models/document'); // Fixed lowercase filename
 const multer = require('multer');
 const path = require('path');
+const crypto = require('crypto');
+
 
 const router = express.Router();
 
@@ -25,7 +27,7 @@ const storage = multer.diskStorage({
 });
 
 const fileFilter = (req, file, cb) => {
-  // ✅ Validate file types for security
+  // Validate file types for security
   const allowedTypes = /pdf|doc|docx|txt|jpg|jpeg|png|gif$/i;
   if (allowedTypes.test(path.extname(file.originalname)) && allowedTypes.test(file.mimetype)) {
     cb(null, true);
@@ -70,24 +72,25 @@ router.get('/', authenticateSession, async (req, res) => {
     const recentPetitions = await Petition.find({ userId }).sort({ createdAt: -1 }).limit(5);
     const recentDocuments = await Document.find({ userId }).sort({ createdAt: -1 }).limit(5);
     
-    // ✅ Get upcoming hearings (for calendar section)
+    // Get upcoming hearings (for calendar section)
     const upcomingHearings = await Case.find({ 
       userId, 
       nextHearing: { $gte: new Date() } 
     }).sort({ nextHearing: 1 }).limit(5);
     
-    // ✅ Get all cases for the dashboard section
+    // Get all cases for the dashboard section
     const allCases = await Case.find({ userId }).sort({ createdAt: -1 });
 
     res.render('dashboard', {
       title: 'Dashboard - CivicaLex',
+      csrfToken: req.csrfToken(),
       user,
       stats: {
         totalCases,
         totalPetitions,
         pendingCases,
         closedCases,
-        upcomingCases,  // ✅ This is now defined
+        upcomingCases,  
         draftedPetitions,
         submittedPetitions,
         approvedPetitions
@@ -95,8 +98,8 @@ router.get('/', authenticateSession, async (req, res) => {
       cases: recentCases,
       petitions: recentPetitions,
       documents: recentDocuments,
-      upcomingHearings,  // ✅ This is now defined
-      allCases          // ✅ This is now defined
+      upcomingHearings, 
+      allCases          
     });
   } catch (error) {
     console.error('Dashboard error:', error);
@@ -111,7 +114,7 @@ router.post('/add-case', authenticateSession, async (req, res) => {
   try {
     const userId = req.session.userId;
     
-    // ✅ Validate required fields
+    // Validate required fields
     const { title, description, type, court, caseNumber, plaintiff, defendant, filingDate, nextHearing } = req.body;
     
     if (!title || !type || !court || !caseNumber) {
@@ -152,7 +155,7 @@ router.post('/add-petition', authenticateSession, async (req, res) => {
   try {
     const userId = req.session.userId;
     
-    // ✅ Validate required fields
+    //  Validate required fields
     const { title, description, type, court, caseNumber, filingDate } = req.body;
     
     if (!title || !description || !type) {
@@ -186,10 +189,11 @@ router.post('/add-petition', authenticateSession, async (req, res) => {
 // Upload document
 router.post('/upload-document', authenticateSession, upload.single('document'), async (req, res) => {
   try {
+    const mongoose = require("mongoose");
     const userId = req.session.userId;
     const { caseId, petitionId, category, description } = req.body;
 
-    // ✅ Validate required fields
+    // Validate required fields
     if (!req.file) {
       return res.status(400).render('error', { 
         title: 'Error', 
@@ -197,7 +201,7 @@ router.post('/upload-document', authenticateSession, upload.single('document'), 
       });
     }
 
-    // ✅ Validate that document is linked to either case or petition
+    // Validate that document is linked to either case or petition
     if (!caseId && !petitionId) {
       return res.status(400).render('error', { 
         title: 'Error', 
@@ -205,8 +209,14 @@ router.post('/upload-document', authenticateSession, upload.single('document'), 
       });
     }
 
-    // ✅ Verify user owns the linked case/petition
+    //  Verify user owns the linked case/petition
     if (caseId) {
+      if (!mongoose.Types.ObjectId.isValid(caseId)) {
+        return res.status(400).render('error', {
+          title: 'Error',
+          message: 'Invalid case ID format'
+        });
+      }
       const linkedCase = await Case.findOne({ _id: caseId, userId });
       if (!linkedCase) {
         return res.status(403).render('error', { 
@@ -217,6 +227,12 @@ router.post('/upload-document', authenticateSession, upload.single('document'), 
     }
     
     if (petitionId) {
+      if (!mongoose.Types.ObjectId.isValid(petitionId)) {
+        return res.status(400).render('error', {
+          title: 'Error',
+          message: 'Invalid petition ID format'
+        });
+      }
       const linkedPetition = await Petition.findOne({ _id: petitionId, userId });
       if (!linkedPetition) {
         return res.status(403).render('error', { 
@@ -226,13 +242,13 @@ router.post('/upload-document', authenticateSession, upload.single('document'), 
       }
     }
 
-    // ✅ Create document record
+    //  Create document record
     const document = new Document({
       userId,
       caseId: caseId || undefined,
       petitionId: petitionId || undefined,
       fileName: req.file.originalname,
-      filePath: req.file.filename, // Store only filename, not full path
+      filePath: req.file.filename, 
       mimeType: req.file.mimetype,
       fileSize: req.file.size,
       category,

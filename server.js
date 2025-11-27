@@ -10,19 +10,19 @@ const WebSocket = require("ws"); // For Python AI WebSocket
 
 dotenv.config();
 
-// ==== ENV CHECK ======================================================
+// ENV CHECK
 const requiredEnv = ["SESSION_SECRET", "MONGODB_URI"];
 for (const envVar of requiredEnv) {
   if (!process.env[envVar]) {
-    console.error(`❌ Missing required env var: ${envVar}`);
+    console.error(` Missing required env var: ${envVar}`);
     process.exit(1);
   }
 }
 
-// ==== EXPRESS APP ====================================================
+// EXPRESS APP 
 const app = express();
 
-// ==== SECURITY: HELMET ==============================================
+//SECURITY: HELMET 
 app.use(
   helmet({
     contentSecurityPolicy: {
@@ -39,10 +39,10 @@ app.use(
   })
 );
 
-// ==== RATE LIMITING =================================================
+// RATE LIMITING 
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 5,
+  max: 10,
   message: "Too many authentication attempts. Please try again later.",
   standardHeaders: true,
   legacyHeaders: false,
@@ -71,11 +71,11 @@ app.use(generalLimiter);
 app.use("/api", apiLimiter);
 app.use("/dashboard/upload-document", uploadLimiter);
 
-// ==== BODY PARSERS ==================================================
+// BODY PARSERS 
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: false, limit: "10mb" }));
 
-// ==== SANITIZATION ==================================================
+//  SANITIZATION 
 app.use((req, res, next) => {
   if (!req.body || typeof req.body !== "object") return next();
 
@@ -110,7 +110,7 @@ app.use((req, res, next) => {
   next();
 });
 
-// ==== SESSION (MUST BE BEFORE CSRF) ================================
+// SESSION 
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
@@ -125,23 +125,23 @@ app.use(
   })
 );
 
-// ==== CSRF SETUP ====================================================
-// We want: NO CSRF for /api/* (including /api/ai/chat), CSRF ON for forms.
+// CSRF SETUP 
+
 const csrfProtection = csrf();
 
 app.use((req, res, next) => {
   // Skip CSRF for any JSON/API route
-  if (req.originalUrl.startsWith("/api/")) {
+  if (req.originalUrl.startsWith("/api/") || req.originalUrl.startsWith("/dashboard/")) {
     return next();
   }
   csrfProtection(req, res, next);
 });
 
-// ==== PYTHON AI WEBSOCKET CLIENT ====================================
+// PYTHON AI WEBSOCKET CLIENT 
 let ws;
 
 function connectWS() {
-  console.log("🔌 Connecting to Python AI WebSocket...");
+  console.log(" Connecting to Python AI WebSocket...");
 
   ws = new WebSocket("ws://127.0.0.1:8000/ws");
 
@@ -162,7 +162,7 @@ function connectWS() {
 connectWS();
 app.set("pythonWS", ws);
 
-// ==== VIEW ENGINE & STATIC FILES ====================================
+// VIEW ENGINE & STATIC FILES 
 app.set("view engine", "pug");
 app.set("views", path.join(__dirname, "views"));
 app.use(express.static(path.join(__dirname, "public")));
@@ -175,7 +175,7 @@ app.use("/uploads", (req, res, next) => {
   next();
 });
 
-// ==== MONGODB CONNECTION ============================================
+//MONGODB CONNECTION 
 mongoose
   .connect(process.env.MONGODB_URI, {
     maxPoolSize: 10,
@@ -188,7 +188,7 @@ mongoose
     process.exit(1);
   });
 
-// ==== ROUTES ========================================================
+//  ROUTES 
 
 // Main routes (HTML pages)
 app.use("/", require("./routes/auth"));
@@ -234,12 +234,12 @@ app.get("/faq", (req, res) => {
   });
 });
 
-// ==== ERROR HANDLER =================================================
+//  ERROR HANDLER 
 app.use((err, req, res, next) => {
   console.error("❌ Server Error:", err.stack);
 
   if (err.code === "EBADCSRFTOKEN") {
-    // This will ONLY trigger for NON-API routes now
+    // ONLY trigger for NON-API routes 
     return res.status(403).render("error", {
       title: "Security Error",
       message: "Invalid security token. Please refresh the page and try again.",
@@ -255,7 +255,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-// ==== 404 HANDLER ===================================================
+// 404 HANDLER 
 app.use((req, res) => {
   res.status(404).render("error", {
     title: "Page Not Found",
@@ -263,11 +263,11 @@ app.use((req, res) => {
   });
 });
 
-// ==== START SERVER ==================================================
+// START SERVER 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(
-    `🚀 CivicaLex server running on port ${PORT} in ${
+    ` CivicaLex server running on port ${PORT} in ${
       process.env.NODE_ENV || "development"
     } mode`
   );

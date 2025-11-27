@@ -12,7 +12,7 @@ block content
             each error in errors
               li= error.msg
       form(method='POST', action='/login')
-        // ✅ CRITICAL: CSRF Token for form protection
+        //  CSRF Token for form protection
         input(type='hidden', name='_csrf', value=csrfToken)
         
         .form-group
