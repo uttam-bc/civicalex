@@ -76,8 +76,15 @@ async def websocket_endpoint(websocket: WebSocket):
                 "reply": str(ai_response),
                 "length": len(str(ai_response)),
             }
+            clean_text = ""
 
-            await websocket.send_text(json.dumps(reply))
+            for ev in ai_response:
+                if hasattr(ev, "content") and ev.content and ev.content.parts:
+                    for part in ev.content.parts:
+                        if hasattr(part, "text") and part.text:
+                            clean_text += part.text + "\n"
+            
+            await websocket.send_text(clean_text.strip())
 
     except Exception as e:
         print(" WebSocket disconnected:", e)
