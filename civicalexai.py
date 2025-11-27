@@ -6,7 +6,7 @@ from fastapi import FastAPI, WebSocket
 import traceback
 
 try:
-    GOOGLE_API_KEY = "AIzaSyCsc791_A3zX4oPGGpjL5q3xksFxZAjQbo"
+    GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
     os.environ["GOOGLE_API_KEY"] = GOOGLE_API_KEY
     print("✅ Google Gemini API key loaded.")
 except Exception as e:
